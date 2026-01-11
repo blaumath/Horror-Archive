@@ -9,8 +9,11 @@ const app = express();
 app.use(cors());
 
 // --- CHAVES ---
-const TMDB_API_KEY = process.env.TMDB_API_Key;
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const OMDB_API_KEY = process.env.OMDB_API_KEY;
+
+console.log('TMDB API Key loaded:', TMDB_API_KEY ? 'YES' : 'NO');
+console.log('OMDb API Key loaded:', OMDB_API_KEY ? 'YES' : 'NO');
 
 // --- IMPORTAÇÕES ---
 const chuckyRelease = require('../Data/chuckyRelease');
@@ -52,14 +55,21 @@ const baseManifest = {
     behaviorHints: { configurable: true, configurationRequired: false }
 };
 
-// --- FUNÇÃO DE BUSCA (OMDb + TMDB) ---
+// --- FUNÇÃO QUE BUSCA TUDO NO TMDB + OMDb ---
 async function fetchFullMetadata(imdbId, type) {
     const cacheKey = `meta_${imdbId}`;
     const cached = posterCache.get(cacheKey);
     if (cached) return cached;
 
+    if (!TMDB_API_KEY) {
+        console.warn('TMDB API Key not found');
+        return null;
+    }
+
     try {
-        // PRIMEIRA FONTE: OMDb (IMDB) - Dados Completos
+        const tmdbType = type === 'series' ? 'tv' : 'movie';
+        
+        // 1. Busca no OMDb primeiro (para sinopse e dados completos)
         let omdbData = null;
         if (OMDB_API_KEY) {
             try {
@@ -67,58 +77,54 @@ async function fetchFullMetadata(imdbId, type) {
                 const omdbRes = await axios.get(omdbUrl);
                 if (omdbRes.data.Response === 'True') {
                     omdbData = omdbRes.data;
+                    console.log(`OMDb data found for ${imdbId}: ${omdbData.Title}`);
                 }
             } catch (e) {
                 console.log(`OMDb fetch error for ${imdbId}:`, e.message);
             }
         }
 
-        // SEGUNDA FONTE: TMDB (para posters e imagens melhores)
+        // 2. Busca o ID do TMDB para imagens melhores
+        const findUrl = `https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id&language=pt-BR`;
+        const findRes = await axios.get(findUrl);
+        const basic = findRes.data.movie_results[0] || findRes.data.tv_results[0];
+
+        if (!basic) {
+            console.warn(`No TMDB data found for ${imdbId}`);
+            return null;
         let tmdbData = null;
         if (TMDB_API_KEY) {
             try {
                 const findUrl = `https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id&language=pt-BR`;
                 const findRes = await axios.get(findUrl);
-                const basic = findRes.data.movie_results[0] || findRes.data.tv_results[0];
-                if (basic) {
-                    const tmdbType = findRes.data.movie_results[0] ? 'movie' : 'tv';
-                    const detailUrl = `https://api.themoviedb.org/3/${tmdbType}/${basic.id}?api_key=${TMDB_API_KEY}&append_to_response=credits&language=pt-BR`;
-                    tmdbData = (await axios.get(detailUrl)).data;
-                }
-            } catch (e) {
-                console.log(`TMDB fetch error for ${imdbId}:`, e.message);
-            }
-        }
+        // 3. Busca detalhes completos no TMDB
+        const detailUrl = `https://api.themoviedb.org/3/${tmdbType}/${basic.id}?api_key=${TMDB_API_KEY}&append_to_response=credits&language=pt-BR`;
+        const d = (await axios.get(detailUrl)).data;
 
-        // COMBINAR DADOS: OMDb para sinopse/dados + TMDB para imagens
-        if (omdbData || tmdbData) {
-            const meta = {
-                id: imdbId,
-                type: type || (omdbData?.Type === 'series' ? 'series' : 'movie'),
-                name: omdbData?.Title || tmdbData?.title || tmdbData?.name || "Horror Archive File",
-                description: omdbData?.Plot || tmdbData?.overview || "Sinopse em breve.",
-                releaseInfo: omdbData?.Year || (tmdbData?.release_date || tmdbData?.first_air_date || "").substring(0, 4),
-                poster: tmdbData?.poster_path 
-                    ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}`
-                    : `https://images.metahub.space/poster/medium/${imdbId}/img`,
-                background: tmdbData?.backdrop_path 
-                    ? `https://image.tmdb.org/t/p/original${tmdbData.backdrop_path}`
-                    : undefined,
-                runtime: omdbData?.Runtime || (tmdbData?.runtime ? `${tmdbData.runtime} min` : (tmdbData?.episode_run_time?.[0] ? `${tmdbData.episode_run_time[0]} min` : "")),
-                genres: tmdbData?.genres?.map(g => g.name) || (omdbData?.Genre?.split(', ') || []),
-                cast: tmdbData?.credits?.cast?.slice(0, 10).map(c => c.name) || (omdbData?.Actors?.split(', ').slice(0, 10) || []),
-                imdbRating: omdbData?.imdbRating || (tmdbData?.vote_average ? tmdbData.vote_average.toFixed(1) : "N/A"),
-                director: omdbData?.Director || tmdbData?.credits?.crew?.find(c => c.job === 'Director')?.name,
-                writer: omdbData?.Writer || tmdbData?.credits?.crew?.find(c => c.job === 'Writer')?.name,
-                imdbVotes: omdbData?.imdbVotes || "N/A",
-                country: omdbData?.Country || tmdbData?.origin_country?.join(', ') || "N/A",
-                awards: omdbData?.Awards || "N/A"
-            };
-            posterCache.set(cacheKey, meta);
-            return meta;
-        }
-    } catch (e) {
-        console.log(`Metadata fetch error for ${imdbId}:`, e.message);
+        // Combinar dados: OMDb para sinopse/dados + TMDB para imagens
+        const meta = {
+            id: imdbId,
+            type: type,
+            name: omdbData?.Title || d.title || d.name,
+            description: omdbData?.Plot || d.overview || "Sinopse em breve.",
+            releaseInfo: (omdbData?.Year || (d.release_date || d.first_air_date || "").substring(0, 4)),
+            poster: `https://image.tmdb.org/t/p/w500${d.poster_path}`,
+            background: `https://image.tmdb.org/t/p/original${d.backdrop_path}`,
+            runtime: omdbData?.Runtime || (d.runtime ? `${d.runtime} min` : d.episode_run_time ? `${d.episode_run_time[0]} min` : ""),
+            genres: d.genres.map(g => g.name),
+            cast: d.credits?.cast?.slice(0, 10).map(c => c.name) || [],
+            imdbRating: omdbData?.imdbRating || (d.vote_average ? d.vote_average.toFixed(1) : "N/A"),
+            director: omdbData?.Director || d.credits?.crew?.find(c => c.job === 'Director')?.name,
+            writer: omdbData?.Writer || d.credits?.crew?.find(c => c.job === 'Writer')?.name,
+            country: omdbData?.Country || d.origin_country?.join(', ') || "N/A",
+            awards: omdbData?.Awards || "N/A"
+        };
+        
+        posterCache.set(cacheKey, meta);
+        console.log(`Metadata fetched for ${imdbId}: ${meta.name}`);
+        return meta;
+    } catch (e) { 
+        console.error(`Error fetching metadata for ${imdbId}:`, e.message);
         return null;
     }
 }
@@ -126,7 +132,7 @@ async function fetchFullMetadata(imdbId, type) {
 // --- ROTAS ---
 
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Cache-Control', 'max-age=3600');
     let manifest = { ...baseManifest };
     manifest.catalogs = [
         {
@@ -146,9 +152,13 @@ app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
 });
 
 app.get('/catalog/:type/:id/:extra.json', (req, res) => {
-    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
-    const params = new URLSearchParams(req.params.extra.replace('.json', ''));
-    const selectedGenre = params.get('genre');
+    res.setHeader('Cache-Control', 'max-age=3600');
+    const extra = req.params.extra.replace('.json', '');
+    const genreMatch = extra.match(/genre=([^&]+)/);
+    const selectedGenre = genreMatch ? decodeURIComponent(genreMatch[1]) : null;
+    
+    console.log('Requesting catalog for genre:', selectedGenre);
+    
     const rawData = genreMapper[selectedGenre] || [];
 
     const metas = rawData.map(item => ({
@@ -159,19 +169,23 @@ app.get('/catalog/:type/:id/:extra.json', (req, res) => {
         poster: `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
         posterShape: "poster"
     }));
+    
     res.json({ metas });
 });
 
 app.get('/meta/:type/:id.json', async (req, res) => {
-    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
+    res.setHeader('Cache-Control', 'max-age=3600');
     const { type, id } = req.params;
     const imdbId = id.replace('.json', '');
+    
+    console.log(`Fetching metadata for ${imdbId} (${type})`);
+    
     const fullMeta = await fetchFullMetadata(imdbId, type);
     
     if (fullMeta) {
         res.json({ meta: fullMeta });
     } else {
-        res.json({ meta: { id: imdbId, name: "Horror File", type: type } });
+        res.json({ meta: { id: imdbId, name: "Horror File", type: type, description: "Sinopse indisponível" } });
     }
 });
 
