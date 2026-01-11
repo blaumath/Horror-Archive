@@ -3,7 +3,6 @@ const cors = require('cors');
 const path = require('path');
 
 // --- IMPORTAÇÃO DE DADOS ---
-// Certifique-se de que os caminhos dos arquivos estão corretos no seu projeto
 const chuckyRelease = require('../Data/chuckyRelease');
 const conjuringRelease = require('../Data/conjuringRelease');
 const conjuringTimeline = require('../Data/conjuringTimeline');
@@ -19,38 +18,55 @@ const stephenKingCollection = require('../Data/stephenKingCollection');
 const app = express();
 app.use(cors());
 
-// Mapeamento para facilitar a unificação
-const catalogMapper = {
-    "ck": chuckyRelease,
-    "cj-r": conjuringRelease,
-    "cj-t": conjuringTimeline,
-    "f13": fridayRelease,
-    "hw": halloweenRelease,
-    "tv": horrorSeries,
-    "ms": modernSagas,
-    "nm": nightmareRelease,
-    "sw": sawTimeline,
-    "sc": screamData,
-    "sk": stephenKingCollection
+// --- MAPEAMENTO PARA O FILTRO (GENRE) ---
+// O nome aqui deve ser EXATAMENTE igual ao que aparecerá no menu da direita
+const genreMapper = {
+    "Chucky Saga": chuckyRelease,
+    "Conjuring (Release)": conjuringRelease,
+    "Conjuring (Timeline)": conjuringTimeline,
+    "Friday the 13th": fridayRelease,
+    "Halloween Collection": halloweenRelease,
+    "Modern Sagas": modernSagas,
+    "Nightmare on Elm St": nightmareRelease,
+    "Saw: Chronological": sawTimeline,
+    "Scream Saga": screamData,
+    "Stephen King": stephenKingCollection
 };
 
 const baseManifest = {
-    id: "com.blaumath.horror.legends.final", 
-    name: "Horror Legends",
+    id: "com.blaumath.horror.archive.final",
+    name: "Horror Archive",
     description: "The definitive archive of horror sagas.",
-    version: "1.5.0",
+    version: "2.1.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog"],
     types: ["movie", "series"],
     idPrefixes: ["tt"],
-    // Esta configuração cria a entrada na barra lateral (Discover)
     catalogs: [
         {
             type: "movie",
-            id: "all_horror_movies",
-            name: "Horror Legends", // O nome que aparecerá ao lado de Marvel/DC
-            extra: [{ name: "search", isRequired: false }]
+            id: "horror_movies_catalog",
+            name: "Horror Archive", // APARECE NA ESQUERDA (Igual Marvel/DC)
+            extra: [
+                {
+                    name: "genre",
+                    options: Object.keys(genreMapper), // APARECE NA DIREITA (As Sagas)
+                    isRequired: true
+                }
+            ]
+        },
+        {
+            type: "series",
+            id: "horror_series_catalog",
+            name: "Horror Archive",
+            extra: [
+                {
+                    name: "genre",
+                    options: ["Horror TV Series"],
+                    isRequired: true
+                }
+            ]
         }
     ],
     behaviorHints: { configurable: true, configurationRequired: false }
@@ -58,49 +74,45 @@ const baseManifest = {
 
 // --- ROTAS ---
 
-// Rota do Manifest
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
     res.json(baseManifest);
 });
 
-// Rota do Catálogo (Onde os filmes são listados)
-app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (req, res) => {
+// Rota do Catálogo com suporte a filtros (extra)
+app.get(['/catalog/:type/:id/:extra.json', '/catalog/:type/:id.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
     
-    const type = req.params.type;
-    const catalogId = req.params.id.replace('.json', '');
+    const { type, id, extra } = req.params;
+    let data = [];
 
-    // Verifica se o ID do catálogo é o que definimos no manifest
-    if (catalogId === "all_horror_movies") {
-        
-        // 1. Junta todos os arquivos JSON em uma lista só
-        let allItems = Object.values(catalogMapper).flat();
+    // Se houver um filtro selecionado (ex: genre=Chucky Saga)
+    if (extra) {
+        const params = new URLSearchParams(extra.replace('.json', ''));
+        const selectedGenre = params.get('genre');
 
-        // 2. Filtra para mostrar apenas Filmes (ou Séries, dependendo da aba)
-        const filteredItems = allItems.filter(item => {
-            const itemType = item.type || "movie";
-            return itemType === type;
-        });
-
-        // 3. Formata para o padrão do Stremio
-        const metas = filteredItems.map(item => ({
-            id: item.imdbId,
-            type: item.type || "movie",
-            name: item.title,
-            releaseInfo: String(item.year),
-            poster: `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
-            posterShape: "poster"
-        }));
-
-        return res.json({ metas });
+        if (type === "series" && selectedGenre === "Horror TV Series") {
+            data = horrorSeries;
+        } else {
+            data = genreMapper[selectedGenre] || [];
+        }
+    } else {
+        // Fallback: Se nada for selecionado, mostra Chucky por padrão ou lista vazia
+        data = chuckyRelease;
     }
 
-    // Retorna vazio se o ID não bater
-    res.status(404).json({ metas: [] });
+    const metas = data.map(item => ({
+        id: item.imdbId,
+        type: item.type || "movie",
+        name: item.title,
+        releaseInfo: String(item.year),
+        poster: `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
+        posterShape: "poster"
+    }));
+
+    res.json({ metas });
 });
 
-// Rota de Configuração (Opcional)
 app.get('/configure', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html'));
 });
