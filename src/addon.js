@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 
 // --- IMPORTAÇÃO DE DADOS ---
+// Importando conforme a estrutura de pastas do seu VS Code
 const chuckyRelease = require('../Data/chuckyRelease');
 const conjuringRelease = require('../Data/conjuringRelease');
 const conjuringTimeline = require('../Data/conjuringTimeline');
@@ -18,8 +19,7 @@ const stephenKingCollection = require('../Data/stephenKingCollection');
 const app = express();
 app.use(cors());
 
-// --- MAPEAMENTO PARA O FILTRO (GENRE) ---
-// O nome aqui deve ser EXATAMENTE igual ao que aparecerá no menu da direita
+// --- MAPEAMENTO PARA O MENU DA DIREITA (GENRE) ---
 const genreMapper = {
     "Chucky Saga": chuckyRelease,
     "Conjuring (Release)": conjuringRelease,
@@ -37,56 +37,66 @@ const baseManifest = {
     id: "com.blaumath.horror.archive.final",
     name: "Horror Archive",
     description: "The definitive archive of horror sagas.",
-    version: "2.1.0",
+    version: "2.5.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog"],
     types: ["movie", "series"],
     idPrefixes: ["tt"],
-    catalogs: [
-        {
-            type: "movie",
-            id: "horror_movies_catalog",
-            name: "Horror Archive", // APARECE NA ESQUERDA (Igual Marvel/DC)
-            extra: [
-                {
-                    name: "genre",
-                    options: Object.keys(genreMapper), // APARECE NA DIREITA (As Sagas)
-                    isRequired: true
-                }
-            ]
-        },
-        {
-            type: "series",
-            id: "horror_series_catalog",
-            name: "Horror Archive",
-            extra: [
-                {
-                    name: "genre",
-                    options: ["Horror TV Series"],
-                    isRequired: true
-                }
-            ]
-        }
-    ],
     behaviorHints: { configurable: true, configurationRequired: false }
 };
 
 // --- ROTAS ---
 
+// Rota do Manifest (Suporta link limpo /manifest.json)
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
-    res.json(baseManifest);
+    
+    const config = req.params.configuration;
+    const allGenreNames = Object.keys(genreMapper);
+    let selectedGenres = allGenreNames;
+
+    // Se houver config na URL (link longo), filtramos. 
+    // Se não houver, o link é o "bonito" e mostramos tudo por padrão.
+    if (config) {
+        const codeMap = {
+            "ck": "Chucky Saga", "cj-r": "Conjuring (Release)", "cj-t": "Conjuring (Timeline)",
+            "f13": "Friday the 13th", "hw": "Halloween Collection", "ms": "Modern Sagas",
+            "nm": "Nightmare on Elm St", "sw": "Saw: Chronological", "sc": "Scream Saga", "sk": "Stephen King"
+        };
+        const requested = config.split(',').map(code => codeMap[code]).filter(Boolean);
+        if (requested.length > 0) selectedGenres = requested;
+    }
+
+    let manifest = { ...baseManifest };
+    manifest.catalogs = [
+        {
+            type: "movie",
+            id: "horror_movies_catalog",
+            name: "Horror Archive", // Nome na lateral esquerda
+            extra: [{ name: "genre", options: selectedGenres, isRequired: true }] // Dropdown na direita
+        }
+    ];
+
+    // Adiciona o catálogo de Séries se estiver no modo "Tudo" ou se 'tv' estiver na config
+    if (!config || config.includes('tv')) {
+        manifest.catalogs.push({
+            type: "series",
+            id: "horror_series_catalog",
+            name: "Horror Archive",
+            extra: [{ name: "genre", options: ["Horror TV Series"], isRequired: true }]
+        });
+    }
+
+    res.json(manifest);
 });
 
-// Rota do Catálogo com suporte a filtros (extra)
+// Rota do Catálogo
 app.get(['/catalog/:type/:id/:extra.json', '/catalog/:type/:id.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
-    
-    const { type, id, extra } = req.params;
+    const { type, extra } = req.params;
     let data = [];
 
-    // Se houver um filtro selecionado (ex: genre=Chucky Saga)
     if (extra) {
         const params = new URLSearchParams(extra.replace('.json', ''));
         const selectedGenre = params.get('genre');
@@ -97,7 +107,7 @@ app.get(['/catalog/:type/:id/:extra.json', '/catalog/:type/:id.json'], (req, res
             data = genreMapper[selectedGenre] || [];
         }
     } else {
-        // Fallback: Se nada for selecionado, mostra Chucky por padrão ou lista vazia
+        // Fallback: mostra a primeira saga se nenhum gênero for enviado
         data = chuckyRelease;
     }
 
