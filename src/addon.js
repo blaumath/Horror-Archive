@@ -37,11 +37,11 @@ const baseManifest = {
     id: "com.blaumath.horrorarchive",
     name: "Horror Legends Collection",
     description: "The definitive archive of horror sagas and supernatural series.",
-    version: "1.0.0",
+    version: "1.0.1", // Versão atualizada para forçar o Stremio a limpar o cache
     logo: "https://raw.githubusercontent.com/blaumath/addon-horror/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/addon-horror/main/assets/background.png",
     resources: ["catalog"],
-    types: ["movie", "series", "Horror Archive"], // Adicionado "Horror Archive" para indexação
+    types: ["movie", "series", "Horror Archive"],
     catalogs: [
         { type: "Horror Archive", id: "conjuring-release", name: "The Conjuring: Release" },
         { type: "Horror Archive", id: "conjuring-timeline", name: "The Conjuring: Timeline" },
@@ -56,12 +56,15 @@ const baseManifest = {
         { type: "Horror Archive", id: "horror-series", name: "Horror TV Series" }
     ],
     idPrefixes: ["tt"],
-    behaviorHints: { configurable: true, configurationRequired: false }
+    behaviorHints: { 
+        configurable: true, 
+        configurationRequired: false 
+    }
 };
 
 // --- ROTAS ---
 
-// Rota Dinâmica para Manifest (Lida com a configuração do site)
+// Rota para o Manifest (Suporta a configuração via URL)
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
     
@@ -69,7 +72,6 @@ app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     const config = req.params.configuration;
 
     if (config) {
-        // Filtra os catálogos baseados na escolha do usuário no site
         const selectedIds = config.split(',');
         manifest.catalogs = baseManifest.catalogs.filter(cat => selectedIds.includes(cat.id));
     }
@@ -77,7 +79,7 @@ app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.json(manifest);
 });
 
-// Rota de Catálogo
+// Rota de Catálogo Dinâmico
 app.get('/catalog/Horror%20Archive/:id.json', (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
     
@@ -98,6 +100,7 @@ app.get('/catalog/Horror%20Archive/:id.json', (req, res) => {
     res.json({ metas });
 });
 
+// Rota da Página de Configuração
 app.get('/configure', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html'));
 });
