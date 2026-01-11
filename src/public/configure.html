@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Horror Archive - Configure Your Nightmares</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        horror: {
+                            blood: '#991b1b', 
+                            dark: '#050505', 
+                            card: 'rgba(15, 0, 0, 0.9)',
+                            button: '#7f1d1d', 
+                            text: '#d1d5db',
+                            accent: '#ef4444' 
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [v-cloak] { display: none; }
+        
+        body {
+            background-color: #000;
+            background-image: radial-gradient(circle at center, #1a0000 0%, #000 100%);
+            min-height: 100vh;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .glassmorphic {
+            background: rgba(10, 0, 0, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(153, 27, 27, 0.3);
+            box-shadow: 0 0 40px rgba(153, 27, 27, 0.2);
+            border-radius: 15px;
+        }
+        
+        .catalog-item {
+            background-color: #121212;
+            border: 1px solid rgba(153, 27, 27, 0.2);
+            transition: all 0.3s ease;
+            color: #991b1b;
+        }
+        
+        .catalog-item:hover {
+            transform: translateY(-2px);
+            border-color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+        
+        .catalog-item.selected {
+            background: #991b1b;
+            color: #fff;
+            border-color: #ff0000;
+        }
+
+        .install-button {
+            background: #991b1b;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 900;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .install-button:hover:not(:disabled) {
+            background: #ef4444;
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Efeito de scanline de filme de terror antigo */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            z-index: 100;
+            background-size: 100% 4px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="text-horror-text py-8 px-4">
+    <div id="app" v-cloak class="max-w-2xl mx-auto">
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-black tracking-tighter text-horror-blood uppercase italic">Horror Archive</h1>
+            <p class="text-xs text-gray-600 uppercase tracking-widest mt-2">The definitive collection of supernatural files</p>
+        </div>
+        
+        <div class="glassmorphic p-8">
+            <div class="mb-6 border-b border-horror-blood/30 pb-4">
+                <h2 class="text-sm uppercase tracking-widest text-horror-accent font-bold">Select Sagas to Manifest:</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+                <div 
+                    v-for="catalog in catalogs" 
+                    :key="catalog.id" 
+                    @click="toggleCatalog(catalog)"
+                    :class="['catalog-item p-4 rounded-md cursor-pointer flex items-center space-x-3', {'selected': selectedCatalogs.includes(catalog.id)}]"
+                >
+                    <i :class="['fas', selectedCatalogs.includes(catalog.id) ? 'fa-skull' : 'fa-ghost']"></i>
+                    <span class="font-bold text-xs uppercase tracking-tight">{{ catalog.name }}</span>
+                </div>
+            </div>
+
+            <button @click="generateLink" :disabled="selectedCatalogs.length === 0" class="install-button w-full py-5 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed">
+                Generate Installation Link
+            </button>
+        </div>
+
+        <div class="text-center mt-10 text-[10px] text-gray-700 uppercase tracking-[0.3em]">
+            <p>Property of Blaumath Archives • No one survives</p>
+        </div>
+
+        <transition name="fade">
+            <div v-if="showInstallPanel" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4">
+                <div class="bg-black border-2 border-horror-blood p-8 rounded-none max-w-sm w-full shadow-[0_0_50px_rgba(153,27,27,0.5)]">
+                    <h3 class="text-horror-accent font-black mb-6 uppercase tracking-widest text-center border-b border-horror-blood/20 pb-4 italic">Nightmare Ready</h3>
+                    <div class="flex flex-col gap-4">
+                        <a :href="stremioUrl" class="install-button text-center py-4 rounded-sm text-sm">Install on Stremio</a>
+                        <button @click="copyToClipboard" class="bg-zinc-900 text-horror-blood border border-horror-blood/30 py-4 rounded-sm text-xs uppercase font-bold hover:bg-horror-blood hover:text-white transition">
+                            {{ copied ? 'Link Copied!' : 'Copy Manifesto URL' }}
+                        </button>
+                        <button @click="showInstallPanel = false" class="text-gray-600 text-[10px] mt-2 uppercase tracking-widest hover:text-white">Return to Shadows</button>
+                    </div>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                catalogs: [
+                    {id: 'conjuring-release', name: 'The Conjuring: Release'},
+                    {id: 'conjuring-timeline', name: 'The Conjuring: Timeline'},
+                    {id: 'scream-collection', name: 'Scream: Full Saga'},
+                    {id: 'halloween-all', name: 'Halloween: Complete'},
+                    {id: 'saw-timeline', name: 'Saw: Chronological'},
+                    {id: 'friday-13th', name: 'Friday the 13th'},
+                    {id: 'chucky-saga', name: 'Chucky / Child\'s Play'},
+                    {id: 'nightmare-elm', name: 'A Nightmare on Elm Street'},
+                    {id: 'stephen-king', name: 'Stephen King Archives'},
+                    {id: 'modern-sagas', name: 'Modern (Terrifier/X/Purge)'},
+                    {id: 'horror-series', name: 'Horror TV Series'}
+                ],
+                selectedCatalogs: [], // Começa vazio para o usuário escolher
+                showInstallPanel: false,
+                installUrl: '',
+                stremioUrl: '',
+                copied: false
+            },
+            methods: {
+                toggleCatalog(catalog) {
+                    const index = this.selectedCatalogs.indexOf(catalog.id);
+                    if (index === -1) this.selectedCatalogs.push(catalog.id);
+                    else this.selectedCatalogs.splice(index, 1);
+                },
+                generateLink() {
+                    const host = window.location.host;
+                    const catalogParam = this.selectedCatalogs.join(',');
+                    
+                    // Formato: host/id1,id2,id3/manifest.json
+                    const manifestPath = `${catalogParam}/manifest.json`;
+                    
+                    this.installUrl = `https://${host}/${manifestPath}`;
+                    this.stremioUrl = `stremio://${host}/${manifestPath}`;
+                    this.showInstallPanel = true;
+                },
+                copyToClipboard() {
+                    navigator.clipboard.writeText(this.installUrl).then(() => {
+                        this.copied = true;
+                        setTimeout(() => this.copied = false, 2000);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

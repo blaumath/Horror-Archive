@@ -1,0 +1,10 @@
+module.exports = [
+  { "title": "Child's Play", "imdbId": "tt0094868", "year": "1988" },
+  { "title": "Child's Play 2", "imdbId": "tt0099253", "year": "1990" },
+  { "title": "Child's Play 3", "imdbId": "tt0101567", "year": "1991" },
+  { "title": "Bride of Chucky", "imdbId": "tt0134547", "year": "1998" },
+  { "title": "Seed of Chucky", "imdbId": "tt0387575", "year": "2004" },
+  { "title": "Curse of Chucky", "imdbId": "tt2230358", "year": "2013" },
+  { "title": "Cult of Chucky", "imdbId": "tt6352890", "year": "2017" },
+  { "title": "Child's Play (Remake)", "imdbId": "tt8663516", "year": "2019" }
+];

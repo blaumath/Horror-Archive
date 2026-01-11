@@ -1,0 +1,28 @@
+{
+  "id": "com.blaumath.horrorarchive",
+  "name": "Horror Legends Collection",
+  "description": "The definitive archive of horror sagas and supernatural series. Organized by fans.",
+  "version": "1.0.0",
+  "logo": "../assets/icon.png",
+  "background": "../assets/background.png",
+  "resources": ["catalog"],
+  "types": ["movie", "series", "Horror Archive"],
+  "idPrefixes": ["tt"],
+  "catalogs": [
+    { "type": "Horror Archive", "id": "conjuring-release", "name": "The Conjuring: Release" },
+    { "type": "Horror Archive", "id": "conjuring-timeline", "name": "The Conjuring: Timeline" },
+    { "type": "Horror Archive", "id": "scream-collection", "name": "Scream: Full Saga" },
+    { "type": "Horror Archive", "id": "halloween-all", "name": "Halloween: Complete" },
+    { "type": "Horror Archive", "id": "saw-timeline", "name": "Saw: Chronological" },
+    { "type": "Horror Archive", "id": "friday-13th", "name": "Friday the 13th" },
+    { "type": "Horror Archive", "id": "chucky-saga", "name": "Chucky / Child's Play" },
+    { "type": "Horror Archive", "id": "nightmare-elm", "name": "A Nightmare on Elm Street" },
+    { "type": "Horror Archive", "id": "stephen-king", "name": "Stephen King Collection" },
+    { "type": "Horror Archive", "id": "modern-sagas", "name": "Modern Sagas (Terrifier/X/Purge)" },
+    { "type": "Horror Archive", "id": "horror-series", "name": "Horror TV Series" }
+  ],
+  "behaviorHints": {
+    "configurable": true,
+    "configurationRequired": false
+  }
+}
