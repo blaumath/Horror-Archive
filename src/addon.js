@@ -48,18 +48,18 @@ const catalogNames = {
 };
 
 const baseManifest = {
-    id: "com.blaumath.horror",
+    id: "com.blaumath.horror.v2", 
     name: "Horror Legends",
-    description: "The definitive archive of horror sagas and series.",
-    version: "1.0.1",
-    logo: "https://raw.githubusercontent.com/blaumath/addon-horror/main/assets/icon.png",
-    background: "https://raw.githubusercontent.com/blaumath/addon-horror/main/assets/background.png",
+    description: "The definitive archive of horror sagas.",
+    version: "1.0.6", // Aumentamos a versão para garantir a atualização
+    // LINKS CORRIGIDOS COM Horror-Archive
+    logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
+    background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog"],
-    types: ["movie", "series", "Horror Archive"],
+    types: ["movie", "series"],
     idPrefixes: ["tt"],
     behaviorHints: { configurable: true, configurationRequired: false }
 };
-
 // --- ROTAS ---
 
 // Rota do Manifest (Resolve o nome gigante e filtra as escolhas)
