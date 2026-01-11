@@ -18,7 +18,7 @@ const stephenKingCollection = require('../Data/stephenKingCollection');
 const app = express();
 app.use(cors());
 
-// --- CONFIGURAÇÃO DE NOMES E CÓDIGOS ---
+// --- MAPEAMENTO COM SHORT-CODES ---
 const catalogMapper = {
     "ck": chuckyRelease,
     "cj-r": conjuringRelease,
@@ -48,11 +48,10 @@ const catalogNames = {
 };
 
 const baseManifest = {
-    id: "com.blaumath.horror.v2", 
+    id: "com.blaumath.horror.ultra", 
     name: "Horror Legends",
-    description: "The definitive archive of horror sagas.",
-    version: "1.0.6", // Aumentamos a versão para garantir a atualização
-    // LINKS CORRIGIDOS COM Horror-Archive
+    description: "The definitive archive of horror sagas and series.",
+    version: "1.1.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog"],
@@ -60,22 +59,20 @@ const baseManifest = {
     idPrefixes: ["tt"],
     behaviorHints: { configurable: true, configurationRequired: false }
 };
+
 // --- ROTAS ---
 
-// Rota do Manifest (Resolve o nome gigante e filtra as escolhas)
+// Rota do Manifest
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
-    
     let manifest = { ...baseManifest };
     const config = req.params.configuration;
-
-    // Se houver configuração, filtra. Se não, mostra TUDO por padrão.
     const codesToShow = config ? config.split(',') : Object.keys(catalogMapper);
 
     manifest.catalogs = codesToShow
-        .filter(code => catalogMapper[code]) // Garante que o código existe
+        .filter(code => catalogMapper[code])
         .map(code => ({
-            type: "Horror Archive",
+            type: code === "tv" ? "series" : "movie",
             id: code,
             name: catalogNames[code]
         }));
@@ -83,10 +80,9 @@ app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.json(manifest);
 });
 
-// Rota do Catálogo (Corrige o Erro 404)
+// Rota do Catálogo (Resolve o 404)
 app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
-    
     const catalogId = req.params.id.replace('.json', '');
     const data = catalogMapper[catalogId];
 
@@ -104,7 +100,6 @@ app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (
     res.json({ metas });
 });
 
-// Página de Configuração
 app.get('/configure', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html'));
 });
