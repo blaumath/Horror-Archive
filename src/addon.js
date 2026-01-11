@@ -42,15 +42,15 @@ const genreMapper = {
 };
 
 const baseManifest = {
-    // MUDANÇA DE ID: Força o Stremio a reconhecer como um novo app e atualizar a interface
-    id: "com.blaumath.horror.archive.v3", 
+    // Mudamos de .v3 para .v4 para forçar o Stremio a resetar tudo
+    id: "com.horror.archive.v4", 
     name: "Horror Archive",
-    description: "The definitive archive of horror sagas with Smart Cache & Dual-API Posters.",
-    version: "3.7.0",
+    description: "The definitive archive of horror sagas.",
+    version: "4.0.0", // Versão nova para não ter erro
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog"],
-    // Define a categoria exclusiva no topo do Stremio
+    // Isso cria o menu "Marvel" no topo
     types: ["Horror Archive", "movie", "series"], 
     idPrefixes: ["tt"],
     behaviorHints: { configurable: true, configurationRequired: false }
