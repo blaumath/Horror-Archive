@@ -2,6 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const axios = require('axios');
+const NodeCache = require("node-cache");
+
+// Cache de posters por 24 horas para economizar CPU do Vercel e chamadas de API
+const posterCache = new NodeCache({ stdTTL: 86400, checkperiod: 120 });
 
 // --- IMPORTAÇÃO DE DADOS ---
 const chuckyRelease = require('../Data/chuckyRelease');
@@ -19,8 +23,7 @@ const stephenKingCollection = require('../Data/stephenKingCollection');
 const app = express();
 app.use(cors());
 
-// --- CONFIGURAÇÃO DAS CHAVES (Vercel) ---
-// Note que usei exatamente os nomes que aparecem no seu print do Vercel
+// --- CONFIGURAÇÃO DAS CHAVES (Vercel Environment Variables) ---
 const TMDB_API_KEY = process.env.TMDB_API_Key; 
 const OMDB_API_KEY = process.env.OMDB_API_KEY;
 
@@ -39,51 +42,60 @@ const genreMapper = {
 };
 
 const baseManifest = {
-    id: "com.blaumath.horror.archive.final",
+    // MUDANÇA DE ID: Força o Stremio a reconhecer como um novo app e atualizar a interface
+    id: "com.blaumath.horror.archive.v3", 
     name: "Horror Archive",
-    description: "The definitive archive of horror sagas with Dual-API Posters.",
-    version: "3.6.0",
+    description: "The definitive archive of horror sagas with Smart Cache & Dual-API Posters.",
+    version: "3.7.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog"],
+    // Define a categoria exclusiva no topo do Stremio
     types: ["Horror Archive", "movie", "series"], 
     idPrefixes: ["tt"],
     behaviorHints: { configurable: true, configurationRequired: false }
 };
 
-// --- SISTEMA INTELIGENTE DE POSTERS (TMDB -> OMDB -> METAHUB) ---
+// --- SISTEMA INTELIGENTE DE POSTERS COM CACHE ---
 async function getBestPoster(imdbId) {
-    // 1. Tenta TMDB (Melhor Qualidade)
-    if (TMDB_API_KEY) {
-        try {
+    // Verifica se o link já está na memória
+    const cachedPoster = posterCache.get(imdbId);
+    if (cachedPoster) return cachedPoster;
+
+    let posterUrl = `https://images.metahub.space/poster/medium/${imdbId}/img`; // Fallback inicial
+
+    try {
+        // 1. Tenta TMDB
+        if (TMDB_API_KEY) {
             const tmdbUrl = `https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id`;
             const res = await axios.get(tmdbUrl);
             const movie = res.data.movie_results[0] || res.data.tv_results[0];
             if (movie && movie.poster_path) {
-                return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
             }
-        } catch (e) { console.error("TMDB Error"); }
-    }
-
-    // 2. Tenta OMDb (Plano B)
-    if (OMDB_API_KEY) {
-        try {
+        } 
+        // 2. Tenta OMDb se o TMDB falhar
+        else if (OMDB_API_KEY) {
             const omdbUrl = `http://www.omdbapi.com/?i=${imdbId}&apikey=${OMDB_API_KEY}`;
             const res = await axios.get(omdbUrl);
             if (res.data && res.data.Poster && res.data.Poster !== "N/A") {
-                return res.data.Poster;
+                posterUrl = res.data.Poster;
             }
-        } catch (e) { console.error("OMDB Error"); }
+        }
+    } catch (e) {
+        console.error(`Error fetching poster for ${imdbId}`);
     }
 
-    // 3. Fallback Final (Metahub)
-    return `https://images.metahub.space/poster/medium/${imdbId}/img`;
+    // Guarda o resultado (mesmo que seja o fallback) no cache por 24h
+    posterCache.set(imdbId, posterUrl);
+    return posterUrl;
 }
 
 // --- ROTAS ---
 
+// Rota do Manifest: Sem cache para garantir que atualizações de sagas apareçam rápido
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
-    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     
     const config = req.params.configuration;
     const allGenreNames = Object.keys(genreMapper);
@@ -111,6 +123,7 @@ app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.json(manifest);
 });
 
+// Rota do Catálogo: Cache de 1 hora para o Stremio não sobrecarregar o Vercel
 app.get(['/catalog/:type/:id/:extra.json', '/catalog/:type/:id.json'], async (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
     
@@ -123,6 +136,7 @@ app.get(['/catalog/:type/:id/:extra.json', '/catalog/:type/:id.json'], async (re
         rawData = genreMapper[selectedGenre] || [];
     }
 
+    // Processa os posters em paralelo para máxima velocidade
     const metas = await Promise.all(rawData.map(async (item) => {
         const posterUrl = await getBestPoster(item.imdbId);
         
