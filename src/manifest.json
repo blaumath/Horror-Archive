@@ -1,6 +1,6 @@
 {
-  "id": "com.blaumath.horrorarchive",
-  "name": "Horror Legends Collection",
+  "id": "com.blaumath.horror",
+  "name": "Horror Legends",
   "description": "The definitive archive of horror sagas and supernatural series. Organized by fans.",
   "version": "1.0.1",
   "logo": "https://raw.githubusercontent.com/blaumath/addon-horror/main/assets/icon.png",
@@ -9,17 +9,17 @@
   "types": ["movie", "series", "Horror Archive"],
   "idPrefixes": ["tt"],
   "catalogs": [
-    { "type": "Horror Archive", "id": "conjuring-release", "name": "The Conjuring: Release" },
-    { "type": "Horror Archive", "id": "conjuring-timeline", "name": "The Conjuring: Timeline" },
-    { "type": "Horror Archive", "id": "scream-collection", "name": "Scream: Full Saga" },
-    { "type": "Horror Archive", "id": "halloween-all", "name": "Halloween: Complete" },
-    { "type": "Horror Archive", "id": "saw-timeline", "name": "Saw: Chronological" },
-    { "type": "Horror Archive", "id": "friday-13th", "name": "Friday the 13th" },
-    { "type": "Horror Archive", "id": "chucky-saga", "name": "Chucky / Child's Play" },
-    { "type": "Horror Archive", "id": "nightmare-elm", "name": "A Nightmare on Elm Street" },
-    { "type": "Horror Archive", "id": "stephen-king", "name": "Stephen King Collection" },
-    { "type": "Horror Archive", "id": "modern-sagas", "name": "Modern Sagas (Terrifier/X/Purge)" },
-    { "type": "Horror Archive", "id": "horror-series", "name": "Horror TV Series" }
+    { "type": "Horror Archive", "id": "cj-r", "name": "The Conjuring: Release" },
+    { "type": "Horror Archive", "id": "cj-t", "name": "The Conjuring: Timeline" },
+    { "type": "Horror Archive", "id": "sc", "name": "Scream: Full Saga" },
+    { "type": "Horror Archive", "id": "hw", "name": "Halloween: Complete" },
+    { "type": "Horror Archive", "id": "sw", "name": "Saw: Chronological" },
+    { "type": "Horror Archive", "id": "f13", "name": "Friday the 13th" },
+    { "type": "Horror Archive", "id": "ck", "name": "Chucky / Child's Play" },
+    { "type": "Horror Archive", "id": "nm", "name": "A Nightmare on Elm Street" },
+    { "type": "Horror Archive", "id": "sk", "name": "Stephen King Collection" },
+    { "type": "Horror Archive", "id": "ms", "name": "Modern Sagas" },
+    { "type": "Horror Archive", "id": "tv", "name": "Horror TV Series" }
   ],
   "behaviorHints": {
     "configurable": true,

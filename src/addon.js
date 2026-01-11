@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-// --- IMPORTAÇÃO DE DADOS (Conforme sua pasta Data) ---
+// --- IMPORTAÇÃO DE DADOS ---
 const chuckyRelease = require('../Data/chuckyRelease');
 const conjuringRelease = require('../Data/conjuringRelease');
 const conjuringTimeline = require('../Data/conjuringTimeline');
@@ -18,7 +18,7 @@ const stephenKingCollection = require('../Data/stephenKingCollection');
 const app = express();
 app.use(cors());
 
-// --- MAPEAMENTO COM SHORT-CODES (Para encurtar a URL) ---
+// --- CONFIGURAÇÃO DE NOMES E CÓDIGOS ---
 const catalogMapper = {
     "ck": chuckyRelease,
     "cj-r": conjuringRelease,
@@ -33,12 +33,25 @@ const catalogMapper = {
     "sk": stephenKingCollection
 };
 
+const catalogNames = {
+    "ck": "Chucky Saga",
+    "cj-r": "Conjuring (Release)",
+    "cj-t": "Conjuring (Timeline)",
+    "f13": "Friday the 13th",
+    "hw": "Halloween: All",
+    "tv": "Horror TV Series",
+    "ms": "Modern Sagas",
+    "nm": "Nightmare on Elm St",
+    "sw": "Saw: Chronological",
+    "sc": "Scream Saga",
+    "sk": "Stephen King Collection"
+};
+
 const baseManifest = {
-    id: "com.blaumath.horror", // ID encurtado
-    name: "Horror Legends", // Nome mais limpo
+    id: "com.blaumath.horror",
+    name: "Horror Legends",
     description: "The definitive archive of horror sagas and series.",
     version: "1.0.1",
-    // Links absolutos corrigem a falta de foto
     logo: "https://raw.githubusercontent.com/blaumath/addon-horror/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/addon-horror/main/assets/background.png",
     resources: ["catalog"],
@@ -47,36 +60,33 @@ const baseManifest = {
     behaviorHints: { configurable: true, configurationRequired: false }
 };
 
-// --- ROTAS DINÂMICAS (Correção do 404) ---
+// --- ROTAS ---
 
-// Rota do Manifest
+// Rota do Manifest (Resolve o nome gigante e filtra as escolhas)
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
+    
     let manifest = { ...baseManifest };
     const config = req.params.configuration;
 
-    if (config) {
-        const selectedShortCodes = config.split(',');
-        // Filtra os catálogos baseado nos códigos curtos da URL
-        manifest.catalogs = Object.keys(catalogMapper)
-            .filter(code => selectedShortCodes.includes(code))
-            .map(code => {
-                // Busca o nome original para exibir no Stremio
-                const names = {
-                    "ck": "Chucky Saga", "cj-r": "Conjuring: Release", "cj-t": "Conjuring: Timeline",
-                    "f13": "Friday the 13th", "hw": "Halloween: All", "tv": "Horror TV Series",
-                    "ms": "Modern Sagas", "nm": "Nightmare on Elm St", "sw": "Saw: Chronological",
-                    "sc": "Scream Saga", "sk": "Stephen King Collection"
-                };
-                return { type: "Horror Archive", id: code, name: names[code] };
-            });
-    }
+    // Se houver configuração, filtra. Se não, mostra TUDO por padrão.
+    const codesToShow = config ? config.split(',') : Object.keys(catalogMapper);
+
+    manifest.catalogs = codesToShow
+        .filter(code => catalogMapper[code]) // Garante que o código existe
+        .map(code => ({
+            type: "Horror Archive",
+            id: code,
+            name: catalogNames[code]
+        }));
+
     res.json(manifest);
 });
 
-// Rota do Catálogo (Resolve o 404 ao aceitar o prefixo de configuração)
+// Rota do Catálogo (Corrige o Erro 404)
 app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
+    
     const catalogId = req.params.id.replace('.json', '');
     const data = catalogMapper[catalogId];
 
@@ -94,6 +104,7 @@ app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (
     res.json({ metas });
 });
 
+// Página de Configuração
 app.get('/configure', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html'));
 });
