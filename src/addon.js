@@ -4,10 +4,14 @@ const path = require('path');
 const axios = require('axios');
 const NodeCache = require("node-cache");
 
-// Cache de posters por 24 horas para economizar CPU do Vercel e chamadas de API
-const posterCache = new NodeCache({ stdTTL: 86400, checkperiod: 120 });
+const posterCache = new NodeCache({ stdTTL: 86400 });
+const app = express();
+app.use(cors());
 
-// --- IMPORTAÇÃO DE DADOS ---
+// --- CHAVES DO VERCEL ---
+const TMDB_API_KEY = process.env.TMDB_API_Key; 
+
+// --- DADOS ---
 const chuckyRelease = require('../Data/chuckyRelease');
 const conjuringRelease = require('../Data/conjuringRelease');
 const conjuringTimeline = require('../Data/conjuringTimeline');
@@ -19,13 +23,6 @@ const nightmareRelease = require('../Data/nightmareRelease');
 const sawTimeline = require('../Data/sawTimeline');
 const screamData = require('../Data/screamData');
 const stephenKingCollection = require('../Data/stephenKingCollection');
-
-const app = express();
-app.use(cors());
-
-// --- CONFIGURAÇÃO DAS CHAVES (Vercel Environment Variables) ---
-const TMDB_API_KEY = process.env.TMDB_API_Key; 
-const OMDB_API_KEY = process.env.OMDB_API_KEY;
 
 const genreMapper = {
     "Chucky Saga": chuckyRelease,
@@ -42,121 +39,103 @@ const genreMapper = {
 };
 
 const baseManifest = {
-    // Mudamos de .v3 para .v4 para forçar o Stremio a resetar tudo
     id: "com.horror.archive.v4", 
     name: "Horror Archive",
     description: "The definitive archive of horror sagas.",
-    version: "4.0.0", // Versão nova para não ter erro
+    version: "4.1.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
-    resources: ["catalog"],
-    // Isso cria o menu "Marvel" no topo
+    // ADICIONADO: Agora o addon diz que também fornece metadados (detalhes)
+    resources: ["catalog", "meta"], 
     types: ["Horror Archive", "movie", "series"], 
     idPrefixes: ["tt"],
     behaviorHints: { configurable: true, configurationRequired: false }
 };
 
-// --- SISTEMA INTELIGENTE DE POSTERS COM CACHE ---
-async function getBestPoster(imdbId) {
-    // Verifica se o link já está na memória
-    const cachedPoster = posterCache.get(imdbId);
-    if (cachedPoster) return cachedPoster;
-
-    let posterUrl = `https://images.metahub.space/poster/medium/${imdbId}/img`; // Fallback inicial
+// --- FUNÇÃO PARA PEGAR TUDO DO TMDB (POSTER + SINOPSE + ELENCO) ---
+async function fetchFullMetadata(imdbId) {
+    const cached = posterCache.get(imdbId);
+    if (cached) return cached;
 
     try {
-        // 1. Tenta TMDB
-        if (TMDB_API_KEY) {
-            const tmdbUrl = `https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id`;
-            const res = await axios.get(tmdbUrl);
-            const movie = res.data.movie_results[0] || res.data.tv_results[0];
-            if (movie && movie.poster_path) {
-                posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-            }
-        } 
-        // 2. Tenta OMDb se o TMDB falhar
-        else if (OMDB_API_KEY) {
-            const omdbUrl = `http://www.omdbapi.com/?i=${imdbId}&apikey=${OMDB_API_KEY}`;
-            const res = await axios.get(omdbUrl);
-            if (res.data && res.data.Poster && res.data.Poster !== "N/A") {
-                posterUrl = res.data.Poster;
-            }
-        }
-    } catch (e) {
-        console.error(`Error fetching poster for ${imdbId}`);
-    }
+        // 1. Acha o ID do TMDB usando o IMDb ID
+        const findUrl = `https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id&language=pt-BR`;
+        const findRes = await axios.get(findUrl);
+        const basic = findRes.data.movie_results[0] || findRes.data.tv_results[0];
+        const type = findRes.data.movie_results[0] ? 'movie' : 'tv';
 
-    // Guarda o resultado (mesmo que seja o fallback) no cache por 24h
-    posterCache.set(imdbId, posterUrl);
-    return posterUrl;
+        if (basic) {
+            // 2. Pega os detalhes completos (Gêneros, Duração, Elenco)
+            const detailUrl = `https://api.themoviedb.org/3/${type}/${basic.id}?api_key=${TMDB_API_KEY}&append_to_response=credits&language=pt-BR`;
+            const detailRes = await axios.get(detailUrl);
+            const d = detailRes.data;
+
+            const meta = {
+                id: imdbId,
+                type: type,
+                name: d.title || d.name,
+                description: d.overview,
+                releaseInfo: (d.release_date || d.first_air_date || "").substring(0, 4),
+                poster: `https://image.tmdb.org/t/p/w500${d.poster_path}`,
+                background: `https://image.tmdb.org/t/p/original${d.backdrop_path}`,
+                runtime: d.runtime ? `${Math.floor(d.runtime / 60)}h ${d.runtime % 60}min` : d.episode_run_time ? `${d.episode_run_time[0]}min` : null,
+                genres: d.genres.map(g => g.name),
+                cast: d.credits.cast.slice(0, 5).map(c => c.name),
+                imdbRating: d.vote_average.toFixed(1)
+            };
+            posterCache.set(imdbId, meta);
+            return meta;
+        }
+    } catch (e) { console.error("TMDB Meta Error", e); }
+    return null;
 }
 
 // --- ROTAS ---
 
-// Rota do Manifest: Sem cache para garantir que atualizações de sagas apareçam rápido
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    
-    const config = req.params.configuration;
-    const allGenreNames = Object.keys(genreMapper);
-    let selectedGenres = allGenreNames;
-
-    if (config) {
-        const codeMap = {
-            "ck": "Chucky Saga", "cj-r": "Conjuring (Release)", "cj-t": "Conjuring (Timeline)",
-            "f13": "Friday the 13th", "hw": "Halloween Collection", "ms": "Modern Sagas",
-            "nm": "Nightmare on Elm St", "sw": "Saw: Chronological", "sc": "Scream Saga", 
-            "sk": "Stephen King", "tv": "Horror TV Series"
-        };
-        const requested = config.split(',').map(code => codeMap[code]).filter(Boolean);
-        if (requested.length > 0) selectedGenres = requested;
-    }
-
     let manifest = { ...baseManifest };
     manifest.catalogs = [{
         type: "Horror Archive", 
         id: "horror_archive_main",
         name: "Sagas",
-        extra: [{ name: "genre", options: selectedGenres, isRequired: true }]
+        extra: [{ name: "genre", options: Object.keys(genreMapper), isRequired: true }]
     }];
-
     res.json(manifest);
 });
 
-// Rota do Catálogo: Cache de 1 hora para o Stremio não sobrecarregar o Vercel
-app.get(['/catalog/:type/:id/:extra.json', '/catalog/:type/:id.json'], async (req, res) => {
-    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
-    
-    const { type, extra } = req.params;
-    let rawData = [];
+// ROTA DO CATÁLOGO (O que aparece na grade)
+app.get('/catalog/:type/:id/:extra.json', async (req, res) => {
+    const params = new URLSearchParams(req.params.extra.replace('.json', ''));
+    const selectedGenre = params.get('genre');
+    const rawData = genreMapper[selectedGenre] || [];
 
-    if (type === "Horror Archive" && extra) {
-        const params = new URLSearchParams(extra.replace('.json', ''));
-        const selectedGenre = params.get('genre');
-        rawData = genreMapper[selectedGenre] || [];
-    }
-
-    // Processa os posters em paralelo para máxima velocidade
     const metas = await Promise.all(rawData.map(async (item) => {
-        const posterUrl = await getBestPoster(item.imdbId);
-        
+        const fullMeta = await fetchFullMetadata(item.imdbId);
         return {
             id: item.imdbId,
             type: item.type || "movie",
             name: item.title,
             releaseInfo: String(item.year),
-            poster: posterUrl,
+            poster: fullMeta ? fullMeta.poster : `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
+            description: fullMeta ? fullMeta.description : "", // Mostra sinopse rápida na grade
             posterShape: "poster"
         };
     }));
-
     res.json({ metas });
 });
 
-app.get('/configure', (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html'));
+// ROTA DE METADADOS (O que aparece na lateral quando você clica)
+app.get('/meta/:type/:id.json', async (req, res) => {
+    const fullMeta = await fetchFullMetadata(req.params.id.replace('.json', ''));
+    if (fullMeta) {
+        res.json({ meta: fullMeta });
+    } else {
+        res.status(404).json({ meta: {} });
+    }
 });
 
+app.get('/configure', (req, res) => res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html')));
 app.get('/', (req, res) => res.redirect('/configure'));
 
 module.exports = app;
