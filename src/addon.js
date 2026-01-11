@@ -48,10 +48,11 @@ const catalogNames = {
 };
 
 const baseManifest = {
-    id: "com.blaumath.horror.ultra", 
+    id: "com.blaumath.horror.final", // <--- MUDANÇA CRUCIAL: ID NOVO!
     name: "Horror Legends",
-    description: "The definitive archive of horror sagas and series.",
-    version: "1.1.0",
+    description: "The definitive archive of horror sagas.",
+    version: "1.2.0", // <--- Versão nova também
+    // Se este link abre no seu navegador, ele VAI abrir no Stremio agora.
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog"],
