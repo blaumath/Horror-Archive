@@ -11,7 +11,7 @@ app.use(cors());
 // --- CHAVES DO VERCEL ---
 const TMDB_API_KEY = process.env.TMDB_API_Key; 
 
-// --- DADOS ---
+// --- DADOS (Importações mantidas) ---
 const chuckyRelease = require('../Data/chuckyRelease');
 const conjuringRelease = require('../Data/conjuringRelease');
 const conjuringTimeline = require('../Data/conjuringTimeline');
@@ -39,55 +39,51 @@ const genreMapper = {
 };
 
 const baseManifest = {
-    id: "com.horror.archive.v4", 
+    id: "com.horror.archive.v5", // MUDEI PARA V5 PARA FORÇAR O STREMIO A LIMPAR O CACHE
     name: "Horror Archive",
     description: "The definitive archive of horror sagas.",
-    version: "4.1.0",
+    version: "5.0.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
-    // ADICIONADO: Agora o addon diz que também fornece metadados (detalhes)
     resources: ["catalog", "meta"], 
     types: ["Horror Archive", "movie", "series"], 
     idPrefixes: ["tt"],
     behaviorHints: { configurable: true, configurationRequired: false }
 };
 
-// --- FUNÇÃO PARA PEGAR TUDO DO TMDB (POSTER + SINOPSE + ELENCO) ---
+// --- FUNÇÃO DE METADADOS (TMDB) ---
 async function fetchFullMetadata(imdbId) {
     const cached = posterCache.get(imdbId);
     if (cached) return cached;
 
     try {
-        // 1. Acha o ID do TMDB usando o IMDb ID
         const findUrl = `https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id&language=pt-BR`;
         const findRes = await axios.get(findUrl);
         const basic = findRes.data.movie_results[0] || findRes.data.tv_results[0];
-        const type = findRes.data.movie_results[0] ? 'movie' : 'tv';
-
+        
         if (basic) {
-            // 2. Pega os detalhes completos (Gêneros, Duração, Elenco)
+            const type = findRes.data.movie_results[0] ? 'movie' : 'tv';
             const detailUrl = `https://api.themoviedb.org/3/${type}/${basic.id}?api_key=${TMDB_API_KEY}&append_to_response=credits&language=pt-BR`;
             const detailRes = await axios.get(detailUrl);
             const d = detailRes.data;
 
             const meta = {
                 id: imdbId,
-                type: type,
+                type: type === 'tv' ? 'series' : 'movie',
                 name: d.title || d.name,
-                description: d.overview,
+                description: d.overview || "Sinopse não disponível em português.",
                 releaseInfo: (d.release_date || d.first_air_date || "").substring(0, 4),
                 poster: `https://image.tmdb.org/t/p/w500${d.poster_path}`,
                 background: `https://image.tmdb.org/t/p/original${d.backdrop_path}`,
-                runtime: d.runtime ? `${Math.floor(d.runtime / 60)}h ${d.runtime % 60}min` : d.episode_run_time ? `${d.episode_run_time[0]}min` : null,
+                runtime: d.runtime ? `${d.runtime} min` : d.episode_run_time ? `${d.episode_run_time[0]} min` : "",
                 genres: d.genres.map(g => g.name),
-                cast: d.credits.cast.slice(0, 5).map(c => c.name),
-                imdbRating: d.vote_average.toFixed(1)
+                cast: d.credits?.cast?.slice(0, 5).map(c => c.name) || [],
+                imdbRating: d.vote_average ? d.vote_average.toFixed(1) : "N/A"
             };
             posterCache.set(imdbId, meta);
             return meta;
         }
-    } catch (e) { console.error("TMDB Meta Error", e); }
-    return null;
+    } catch (e) { return null; }
 }
 
 // --- ROTAS ---
@@ -104,34 +100,35 @@ app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.json(manifest);
 });
 
-// ROTA DO CATÁLOGO (O que aparece na grade)
+// CATALOGO (Rápido, sem chamadas de API pesadas)
 app.get('/catalog/:type/:id/:extra.json', async (req, res) => {
+    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
     const params = new URLSearchParams(req.params.extra.replace('.json', ''));
     const selectedGenre = params.get('genre');
     const rawData = genreMapper[selectedGenre] || [];
 
-    const metas = await Promise.all(rawData.map(async (item) => {
-        const fullMeta = await fetchFullMetadata(item.imdbId);
-        return {
-            id: item.imdbId,
-            type: item.type || "movie",
-            name: item.title,
-            releaseInfo: String(item.year),
-            poster: fullMeta ? fullMeta.poster : `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
-            description: fullMeta ? fullMeta.description : "", // Mostra sinopse rápida na grade
-            posterShape: "poster"
-        };
+    const metas = rawData.map(item => ({
+        id: item.imdbId,
+        type: item.type || "movie",
+        name: item.title,
+        releaseInfo: String(item.year),
+        poster: `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
+        posterShape: "poster"
     }));
     res.json({ metas });
 });
 
-// ROTA DE METADADOS (O que aparece na lateral quando você clica)
+// META (Aqui é onde a mágica da lateral acontece)
 app.get('/meta/:type/:id.json', async (req, res) => {
-    const fullMeta = await fetchFullMetadata(req.params.id.replace('.json', ''));
+    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
+    const imdbId = req.params.id.replace('.json', '');
+    const fullMeta = await fetchFullMetadata(imdbId);
+    
     if (fullMeta) {
         res.json({ meta: fullMeta });
     } else {
-        res.status(404).json({ meta: {} });
+        // Se a API falhar, manda o básico para não ficar vazio
+        res.json({ meta: { id: imdbId, name: "Horror Archive File", type: "movie" } });
     }
 });
 
