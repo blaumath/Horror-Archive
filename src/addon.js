@@ -24,7 +24,6 @@ const sawTimeline = require('../Data/sawTimeline');
 const screamData = require('../Data/screamData');
 const stephenKingCollection = require('../Data/stephenKingCollection');
 
-// Mapa de Catálogos
 const catalogsData = {
     "chucky_saga": { name: "Chucky Saga", data: chuckyRelease },
     "conjuring_rel": { name: "Conjuring (Release)", data: conjuringRelease },
@@ -40,32 +39,25 @@ const catalogsData = {
 };
 
 const baseManifest = {
-    id: "com.horror.archive.v9", // Versão 9 para limpar tudo
+    id: "com.horror.archive.v11", // MUDAMOS O ID PARA RESETAR TUDO
     name: "Horror Archive",
     description: "The definitive horror archive.",
-    version: "9.0.0",
+    version: "11.0.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog", "meta"], 
-    types: ["Horror Archive", "movie", "series"], 
-    
-    // TRUQUE DA MARVEL: Prefixo próprio para o Stremio não usar o Cinemeta
-    idPrefixes: ["ha:"], 
-
+    types: ["movie", "series", "Horror Archive"], 
+    // VOLTAMOS PARA O TT: Isso faz o Torrentio e outros funcionarem!
+    idPrefixes: ["tt"], 
     catalogs: Object.keys(catalogsData).map(key => ({
         type: "Horror Archive",
         id: key,
-        name: catalogsData[key].name,
-        extra: []
+        name: catalogsData[key].name
     })),
     behaviorHints: { configurable: true, configurationRequired: false }
 };
 
-// --- FUNÇÃO DE BUSCA DO TMDB ---
-async function fetchFullMetadata(uniqueId) {
-    // Remove o prefixo "ha:" para buscar no TMDB
-    const imdbId = uniqueId.replace("ha:", "");
-    
+async function fetchFullMetadata(imdbId, type) {
     const cacheKey = `meta_${imdbId}`;
     const cached = posterCache.get(cacheKey);
     if (cached) return cached;
@@ -73,91 +65,63 @@ async function fetchFullMetadata(uniqueId) {
     if (!TMDB_API_KEY) return null;
 
     try {
-        // Tenta achar pelo ID
         const findUrl = `https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id&language=pt-BR`;
         const findRes = await axios.get(findUrl);
-        
-        const movieRes = findRes.data.movie_results[0];
-        const tvRes = findRes.data.tv_results[0];
-        const basic = movieRes || tvRes;
-        const type = tvRes ? 'tv' : 'movie';
+        const basic = findRes.data.movie_results[0] || findRes.data.tv_results[0];
+        const tmdbType = findRes.data.movie_results[0] ? 'movie' : 'tv';
 
         if (basic) {
-            const detailUrl = `https://api.themoviedb.org/3/${type}/${basic.id}?api_key=${TMDB_API_KEY}&append_to_response=credits&language=pt-BR`;
+            const detailUrl = `https://api.themoviedb.org/3/${tmdbType}/${basic.id}?api_key=${TMDB_API_KEY}&append_to_response=credits&language=pt-BR`;
             const d = (await axios.get(detailUrl)).data;
 
             const meta = {
-                id: uniqueId, // Retorna o ID com prefixo
-                type: type === 'tv' ? 'series' : 'movie',
+                id: imdbId,
+                type: tmdbType === 'tv' ? 'series' : 'movie',
                 name: d.title || d.name,
                 description: d.overview || "Sinopse indisponível.",
                 releaseInfo: (d.release_date || d.first_air_date || "").substring(0, 4),
-                poster: d.poster_path ? `https://image.tmdb.org/t/p/w500${d.poster_path}` : null,
-                background: d.backdrop_path ? `https://image.tmdb.org/t/p/original${d.backdrop_path}` : null,
+                poster: `https://image.tmdb.org/t/p/w500${d.poster_path}`,
+                background: `https://image.tmdb.org/t/p/original${d.backdrop_path}`,
                 runtime: d.runtime ? `${d.runtime} min` : null,
-                genres: d.genres ? d.genres.map(g => g.name) : [],
+                genres: d.genres.map(g => g.name),
                 cast: d.credits?.cast?.slice(0, 5).map(c => c.name) || [],
                 imdbRating: d.vote_average ? d.vote_average.toFixed(1) : "N/A"
             };
-            
             posterCache.set(cacheKey, meta);
             return meta;
         }
-    } catch (e) { 
-        console.error("Erro API:", e.message);
-        return null; 
-    }
+    } catch (e) { return null; }
 }
-
-// --- ROTAS ---
 
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.json(baseManifest);
 });
 
-// CATÁLOGO
 app.get('/catalog/:type/:id.json', (req, res) => {
-    const catalogId = req.params.id;
-    const catalogEntry = catalogsData[catalogId];
-    
+    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
+    const catalogEntry = catalogsData[req.params.id];
     if (!catalogEntry) return res.json({ metas: [] });
 
     const metas = catalogEntry.data.map(item => ({
-        // AQUI ESTÁ O TRUQUE: Adicionamos "ha:" na frente do ID
-        id: `ha:${item.imdbId}`,
+        id: item.imdbId, // ID PURO (tt...) PARA OS LINKS FUNCIONAREM
         type: item.type || "movie", 
         name: item.title,
         releaseInfo: String(item.year),
         poster: `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
         posterShape: "poster"
     }));
-
     res.json({ metas });
 });
 
-// META (Detalhes)
 app.get('/meta/:type/:id.json', async (req, res) => {
-    const uniqueId = req.params.id.replace('.json', '');
-    
-    // Se o Stremio pedir sem o prefixo, ignoramos (para não dar conflito)
-    if (!uniqueId.startsWith("ha:")) {
-        return res.json({ meta: { id: uniqueId, name: "Use Horror Archive Category", type: "movie" } });
-    }
-
-    const fullMeta = await fetchFullMetadata(uniqueId);
+    const imdbId = req.params.id.replace('.json', '');
+    const fullMeta = await fetchFullMetadata(imdbId, req.params.type);
     
     if (fullMeta) {
         res.json({ meta: fullMeta });
     } else {
-        res.json({ 
-            meta: { 
-                id: uniqueId, 
-                type: "movie",
-                name: "Erro de Dados", 
-                description: "Não foi possível carregar os dados do TMDB. Verifique a chave API." 
-            } 
-        });
+        res.json({ meta: { id: imdbId, type: req.params.type, name: "Horror Archive" } });
     }
 });
 
