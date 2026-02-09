@@ -1,11 +1,25 @@
 module.exports = [
-  { "title": "The Nun (Story set in 1952)", "imdbId": "tt5814060", "year": "2018" },
-  { "title": "Annabelle: Creation (Story set in 1955)", "imdbId": "tt5140878", "year": "2017" }, // CORRIGIDO: era tt3322940
-  { "title": "The Nun II (Story set in 1956)", "imdbId": "tt10160976", "year": "2023" },
-  { "title": "Annabelle (Story set in 1967)", "imdbId": "tt3322940", "year": "2014" },
-  { "title": "The Conjuring (Story set in 1971)", "imdbId": "tt1457767", "year": "2013" },
-  { "title": "Annabelle Comes Home (Story set in 1972)", "imdbId": "tt8350360", "year": "2019" },
-  { "title": "The Curse of La Llorona (Story set in 1973)", "imdbId": "tt4913966", "year": "2019" },
-  { "title": "The Conjuring 2 (Story set in 1977)", "imdbId": "tt3065204", "year": "2016" },
-  { "title": "The Conjuring: The Devil Made Me Do It (Story set in 1981)", "imdbId": "tt7069210", "year": "2021" }
+  // Story set in 1952
+  { "title": "The Nun", "imdbId": "tt5814060", "year": "2018" },
+  
+  // Story set in 1955
+  { "title": "Annabelle: Creation", "imdbId": "tt5140878", "year": "2017" },
+  
+  // Story set in 1956
+  { "title": "The Nun II", "imdbId": "tt10160976", "year": "2023" },
+  
+  // Story set in 1967
+  { "title": "Annabelle", "imdbId": "tt3322940", "year": "2014" },
+  
+  // Story set in 1971
+  { "title": "The Conjuring", "imdbId": "tt1457767", "year": "2013" },
+  
+  // Story set in 1972
+  { "title": "Annabelle Comes Home", "imdbId": "tt8350360", "year": "2019" },
+  
+  // Story set in 1977
+  { "title": "The Conjuring 2", "imdbId": "tt3065204", "year": "2016" },
+  
+  // Story set in 1981
+  { "title": "The Conjuring: The Devil Made Me Do It", "imdbId": "tt7069210", "year": "2021" }
 ];

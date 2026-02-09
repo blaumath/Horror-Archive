@@ -1,10 +1,15 @@
 module.exports = [
+  // --- TERRIFIER ---
   { "title": "Terrifier", "imdbId": "tt4281724", "year": "2016" },
   { "title": "Terrifier 2", "imdbId": "tt10403420", "year": "2022" },
   { "title": "Terrifier 3", "imdbId": "tt27911000", "year": "2024" },
+  
+  // --- X TRILOGY ---
   { "title": "X", "imdbId": "tt13560574", "year": "2022" },
   { "title": "Pearl", "imdbId": "tt18925334", "year": "2022" },
   { "title": "MaXXXine", "imdbId": "tt22048412", "year": "2024" },
+  
+  // --- THE PURGE ---
   { "title": "The Purge", "imdbId": "tt2184339", "year": "2013" },
   { "title": "The Purge: Anarchy", "imdbId": "tt2975578", "year": "2014" },
   { "title": "The Purge: Election Year", "imdbId": "tt4094724", "year": "2016" },
