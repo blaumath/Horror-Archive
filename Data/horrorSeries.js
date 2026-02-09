@@ -32,7 +32,7 @@ module.exports = [
   { "title": "The Walking Dead: World Beyond", "imdbId": "tt8693918", "year": "2020", "type": "series" },
   { "title": "Tales of the Walking Dead", "imdbId": "tt14230728", "year": "2022", "type": "series" },
   { "title": "The Walking Dead: Dead City", "imdbId": "tt18546730", "year": "2023", "type": "series" },
-  { "title": "The Walking Dead: Daryl Dixon", "imdbId": "tt18546730", "year": "2023", "type": "series" },
+  { "title": "The Walking Dead: Daryl Dixon", "imdbId": "tt13062500", "year": "2023", "type": "series" },
 
   // --- VAMPIRES & GOTHIC HORROR ---
   { "title": "Interview with the Vampire (AMC)", "imdbId": "tt3960394", "year": "2022", "type": "series" },
@@ -87,7 +87,6 @@ module.exports = [
   { "title": "Outcast", "imdbId": "tt4229954", "year": "2016", "type": "series" },
   { "title": "Constantine", "imdbId": "tt3489184", "year": "2014", "type": "series" },
   { "title": "Damien", "imdbId": "tt4924886", "year": "2016", "type": "series" },
-  { "title": "Da Vinci's Demons", "imdbId": "tt2094262", "year": "2013", "type": "series" },
 
   // --- FOUND FOOTAGE & MOCKUMENTARY ---
   { "title": "Channel Zero", "imdbId": "tt4820370", "year": "2016", "type": "series" },
