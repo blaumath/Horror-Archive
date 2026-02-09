@@ -5,7 +5,7 @@ Este guia explica como configurar as variáveis de ambiente no Vercel para o Hor
 ## 📋 Pré-requisitos
 
 - Projeto Horror Archive já conectado ao Vercel
-- Chave de API do TMDB (opcional, mas recomendada)
+- Chave de API do TMDB (opcional, mas recomendado)
 
 ---
 
