@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
-// This is a simple starter script that loads environment variables and runs the server
 require('dotenv').config();
-require('./addon');
+const app = require('./addon');
+
+const PORT = process.env.PORT || 7000;
+app.listen(PORT, () => {
+    console.log(`🎬 Horror Archive running at http://localhost:${PORT}`);
+    console.log(`📋 Manifest: http://localhost:${PORT}/manifest.json`);
+    console.log(`⚙️  Configure: http://localhost:${PORT}/configure`);
+});

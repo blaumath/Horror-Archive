@@ -47,11 +47,5 @@
       ]
     }
   ],
-  "regions": ["gru1"],
-  "functions": {
-    "src/addon.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  }
+  "regions": ["gru1"]
 }
