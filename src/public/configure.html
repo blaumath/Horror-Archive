@@ -156,16 +156,40 @@
             border: 1px solid rgba(239, 68, 68, 0.2);
             border-radius: 10px;
         }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%);
+            border: 1px solid rgba(153, 27, 27, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+            margin: 0 auto 1rem;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body class="text-horror-text py-6 px-4">
-    <div id="app" v-cloak class="max-w-5xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <div class="flex items-center justify-center mb-4">
-                <i class="fas fa-skull text-horror-blood text-5xl animate-float"></i>
+    <div id="app" v-cloak class="max-w-6xl mx-auto">
+        <!-- Header with Hero -->
+        <div class="hero-section text-center">
+            <div class="logo-container animate-float">
+                <img src="https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png" alt="Horror Archive Logo">
             </div>
-            <h1 class="text-6xl font-black tracking-tighter text-horror-blood uppercase mb-2">
+            <h1 class="text-5xl md:text-6xl font-black tracking-tighter text-horror-blood uppercase mb-2">
                 Horror Archive
             </h1>
             <p class="text-xs text-gray-500 uppercase tracking-[0.4em] mb-1">
@@ -188,12 +212,12 @@
             </div>
             <div class="stats-box p-4 text-center">
                 <div class="text-3xl font-black text-horror-accent mb-1">24</div>
-                <div class="text-[10px] text-gray-500 uppercase tracking-wider">Catalogs</div>
+                <div class="text-[10px] text-gray-500 uppercase tracking-wider">Total Catalogs</div>
             </div>
         </div>
 
         <!-- Main Panel -->
-        <div class="glassmorphic p-8 mb-6">
+        <div class="glassmorphic p-6 md:p-8 mb-6">
             <!-- Controls -->
             <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-horror-blood/30 gap-4">
                 <div>
@@ -242,7 +266,8 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-xs uppercase tracking-tight mb-1">{{ catalog.name }}</h3>
-                        <p class="text-[9px] text-gray-600">{{ catalog.count }} items</p>
+                        <p class="text-[9px] text-gray-600 mb-1">{{ catalog.desc }}</p>
+                        <p class="text-[9px] text-gray-500">{{ catalog.count }} items</p>
                     </div>
                 </div>
             </div>
@@ -313,39 +338,39 @@
             el: '#app',
             data: {
                 catalogs: [
-                    // CLASSIC SLASHERS
-                    {id: 'halloween', name: 'Halloween Saga', icon: '🎃', count: 13, category: 'slasher'},
-                    {id: 'friday_13th', name: 'Friday the 13th', icon: '🔪', count: 12, category: 'slasher'},
-                    {id: 'nightmare', name: 'Nightmare on Elm St', icon: '💀', count: 9, category: 'slasher'},
-                    {id: 'scream', name: 'Scream Saga', icon: '📞', count: 6, category: 'slasher'},
-                    {id: 'chucky_saga', name: 'Chucky Saga', icon: '🔴', count: 8, category: 'slasher'},
-                    {id: 'saw', name: 'Saw Legacy', icon: '🧩', count: 10, category: 'slasher'},
-                    {id: 'texas_chainsaw', name: 'Texas Chainsaw', icon: '🪚', count: 9, category: 'slasher'},
+                    // CLASSIC SLASHERS (category: 'slasher')
+                    {id: 'halloween', name: 'Halloween Saga', icon: '🎃', count: 13, desc: '1978-2022 • Michael Myers', category: 'slasher'},
+                    {id: 'friday_13th', name: 'Friday the 13th', icon: '🔪', count: 12, desc: '1980-2009 • Jason Voorhees', category: 'slasher'},
+                    {id: 'nightmare', name: 'Nightmare on Elm St', icon: '💀', count: 9, desc: '1984-2010 • Freddy Krueger', category: 'slasher'},
+                    {id: 'scream', name: 'Scream Saga', icon: '📞', count: 7, desc: '1996-2025 • Ghostface', category: 'slasher'},
+                    {id: 'chucky_saga', name: 'Chucky Saga', icon: '🔴', count: 8, desc: '1988-2024 • Killer Doll', category: 'slasher'},
+                    {id: 'saw', name: 'Saw Legacy', icon: '🧩', count: 10, desc: '2004-2023 • Jigsaw Timeline', category: 'slasher'},
+                    {id: 'evil_dead', name: 'Evil Dead Saga', icon: '📖', count: 5, desc: '1981-2023 • The Necronomicon', category: 'slasher'},
+                    {id: 'texas_chainsaw', name: 'Texas Chainsaw', icon: '🪚', count: 9, desc: '1974-2022 • Leatherface', category: 'slasher'},
+                    {id: 'hellraiser', name: 'Hellraiser', icon: '📦', count: 11, desc: '1987-2022 • Pinhead', category: 'slasher'},
                     
-                    // SUPERNATURAL
-                    {id: 'conjuring_rel', name: 'Conjuring (Release)', icon: '👻', count: 9, category: 'supernatural'},
-                    {id: 'conjuring_time', name: 'Conjuring (Timeline)', icon: '⏳', count: 9, category: 'supernatural'},
-                    {id: 'insidious', name: 'Insidious Universe', icon: '🚪', count: 5, category: 'supernatural'},
-                    {id: 'paranormal', name: 'Paranormal Activity', icon: '📹', count: 7, category: 'supernatural'},
+                    // SUPERNATURAL UNIVERSES (category: 'supernatural')
+                    {id: 'conjuring_rel', name: 'Conjuring (Release)', icon: '👻', count: 9, desc: 'Release Order • Warren Universe', category: 'supernatural'},
+                    {id: 'conjuring_time', name: 'Conjuring (Timeline)', icon: '⏳', count: 9, desc: 'Timeline Order • Warren Universe', category: 'supernatural'},
+                    {id: 'insidious', name: 'Insidious Universe', icon: '🚪', count: 5, desc: '2010-2023 • The Further', category: 'supernatural'},
+                    {id: 'paranormal', name: 'Paranormal Activity', icon: '📹', count: 7, desc: '2007-2021 • Found Footage', category: 'supernatural'},
                     
-                    // MODERN SAGAS
-                    {id: 'modern_horror', name: 'Modern Horror Sagas', icon: '🎬', count: 11, category: 'modern'},
-                    {id: 'final_dest', name: 'Final Destination', icon: '💀', count: 5, category: 'modern'},
-                    {id: 'resident_evil', name: 'Resident Evil', icon: '🧟', count: 7, category: 'modern'},
-                    {id: 'evil_dead', name: 'Evil Dead Saga', icon: '📖', count: 5, category: 'modern'},
-                    {id: 'hellraiser', name: 'Hellraiser', icon: '📦', count: 11, category: 'modern'},
-                    {id: 'a24_horror', name: 'A24 & Indie Horror', icon: '🎨', count: 12, category: 'modern'},
+                    // MODERN SAGAS (category: 'modern')
+                    {id: 'modern_horror', name: 'Modern Horror Sagas', icon: '🎬', count: 11, desc: 'Terrifier, X, The Purge', category: 'modern'},
+                    {id: 'final_dest', name: 'Final Destination', icon: '💀', count: 5, desc: '2000-2011 • Death\'s Design', category: 'modern'},
+                    {id: 'resident_evil', name: 'Resident Evil', icon: '🧟', count: 7, desc: '2002-2021 • Umbrella Corp', category: 'modern'},
+                    {id: 'a24_horror', name: 'A24 & Indie Horror', icon: '🎨', count: 16, desc: 'Hereditary, Midsommar, Talk to Me', category: 'modern'},
                     
-                    // BY GENRE
-                    {id: 'classics', name: 'Horror Classics (60s-00s)', icon: '👑', count: 70, category: 'genre'},
-                    {id: 'psychological', name: 'Psychological Horror', icon: '🧠', count: 28, category: 'genre'},
-                    {id: 'found_footage', name: 'Found Footage', icon: '📼', count: 24, category: 'genre'},
-                    {id: 'zombies', name: 'Zombie Films', icon: '🧟‍♂️', count: 28, category: 'genre'},
-                    {id: 'asian_horror', name: 'Asian Horror', icon: '🎌', count: 27, category: 'genre'},
+                    // BY GENRE (category: 'genre')
+                    {id: 'classics', name: 'Horror Classics (60s-00s)', icon: '👑', count: 70, desc: 'Psycho to The Descent', category: 'genre'},
+                    {id: 'psychological', name: 'Psychological Horror', icon: '🧠', count: 28, desc: 'Se7en, Hereditary, Black Swan', category: 'genre'},
+                    {id: 'found_footage', name: 'Found Footage', icon: '📼', count: 24, desc: 'Blair Witch, REC, V/H/S', category: 'genre'},
+                    {id: 'zombies', name: 'Zombie Films', icon: '🧟‍♂️', count: 28, desc: 'Romero to Train to Busan', category: 'genre'},
+                    {id: 'asian_horror', name: 'Asian Horror', icon: '🎌', count: 27, desc: 'J-Horror & K-Horror', category: 'genre'},
                     
-                    // SPECIAL
-                    {id: 'stephen_king', name: 'Stephen King Collection', icon: '📚', count: 24, category: 'special'},
-                    {id: 'horror_series', name: 'Horror TV Series', icon: '📺', count: 30, category: 'special'},
+                    // SPECIAL COLLECTIONS (category: 'special')
+                    {id: 'stephen_king', name: 'Stephen King Collection', icon: '📚', count: 24, desc: 'IT, The Shining, Carrie', category: 'special'},
+                    {id: 'horror_series', name: 'Horror TV Series', icon: '📺', count: 30, desc: 'FROM, Flanagan, AHS', category: 'special'},
                 ],
                 categories: [
                     {id: 'slasher', name: 'Slasher'},

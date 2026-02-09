@@ -117,7 +117,7 @@ https://horror-archive.vercel.app/manifest.json
 - **Total Films**: 500+
 - **Total Series**: 30+
 - **Franchises**: 20+
-- **Decades Covered**: 1960s - 2024
+- **Decades Covered**: 1960s - 2025
 - **Languages**: Portuguese, English
 - **Update Frequency**: Weekly
 
@@ -130,14 +130,6 @@ Found a bug or want to suggest a film?
 1. Open an [Issue](https://github.com/blaumath/Horror-Archive/issues)
 2. Submit a [Pull Request](https://github.com/blaumath/Horror-Archive/pulls)
 3. Star ⭐ this repository if you like it!
-
----
-
-## 📜 Credits
-
-This addon was built with ❤️ by horror fans, for horror fans.
-
-Original inspiration from [addon-007](https://github.com/joaogonp) by **joaogonp**.
 
 ---
 

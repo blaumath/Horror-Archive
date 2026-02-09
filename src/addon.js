@@ -201,7 +201,10 @@ app.get('/meta/:type/:id.json', async (req, res) => {
 });
 
 // Página de configuração
-app.get('/configure', (req, res) => res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html')));
+app.get('/configure', (req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.sendFile(path.join(__dirname, 'public', 'configure.html'));
+});
 app.get('/', (req, res) => res.redirect('/configure'));
 
 // Health check
