@@ -20,6 +20,7 @@ All notable changes to Horror Archive will be documented in this file.
 
 ### 🐛 Fixed
 - **Critical**: Verified Vercel deployment configuration uses modern `rewrites` instead of deprecated `builds`/`routes`
+- **Critical**: Removed non-existent secret reference from vercel.json that was causing deployment errors
 - **Conjuring Universe**: Corrected film count from 9 to 8 films
 
 ### 🎨 Improvements
@@ -34,6 +35,7 @@ All notable changes to Horror Archive will be documented in this file.
 - Updated technical details and API integration info
 - Enhanced installation instructions
 - Better feature descriptions and statistics
+- Added optional TMDB API key configuration instructions
 
 ---
 

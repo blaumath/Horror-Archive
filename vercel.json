@@ -6,9 +6,6 @@
       "destination": "/src/addon.js"
     }
   ],
-  "env": {
-    "TMDB_API_Key": "@tmdb_api_key"
-  },
   "headers": [
     {
       "source": "/manifest.json",

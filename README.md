@@ -111,6 +111,22 @@ https://horror-archive.vercel.app/manifest.json
 - **NodeCache** - In-memory caching
 - **Compression** - Response compression
 
+### Optional Configuration
+
+#### TMDB API Key (Optional)
+The addon works perfectly without a TMDB API key, using fallback metadata sources. However, if you want enhanced metadata (cast, crew, directors, ratings), you can add a TMDB API key:
+
+**For local development:**
+1. Create a `.env` file in the root directory
+2. Add: `TMDB_API_Key=your_api_key_here`
+
+**For Vercel deployment:**
+1. Go to your Vercel project settings
+2. Navigate to Environment Variables
+3. Add `TMDB_API_Key` with your API key value
+
+*Note: Without the API key, the addon will still function normally using alternative metadata sources.*
+
 ---
 
 ## 📊 Statistics
