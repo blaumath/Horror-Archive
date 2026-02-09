@@ -1,6 +1,6 @@
 module.exports = [
   { "title": "The Nun (Story set in 1952)", "imdbId": "tt5814060", "year": "2018" },
-  { "title": "Annabelle: Creation (Story set in 1955)", "imdbId": "tt3322940", "year": "2017" },
+  { "title": "Annabelle: Creation (Story set in 1955)", "imdbId": "tt5140878", "year": "2017" }, // CORRIGIDO: era tt3322940
   { "title": "The Nun II (Story set in 1956)", "imdbId": "tt10160976", "year": "2023" },
   { "title": "Annabelle (Story set in 1967)", "imdbId": "tt3322940", "year": "2014" },
   { "title": "The Conjuring (Story set in 1971)", "imdbId": "tt1457767", "year": "2013" },

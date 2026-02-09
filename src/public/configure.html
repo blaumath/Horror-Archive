@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Horror Archive - Configure Your Nightmares</title>
+    <title>🎬 Horror Archive - Configure Your Collection</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,6 +24,13 @@
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
                     }
                 }
             }
@@ -31,48 +38,92 @@
     </script>
     <style>
         [v-cloak] { display: none; }
+        
         body {
             background-color: #000;
-            background-image: radial-gradient(circle at center, #1a0000 0%, #000 100%);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(153, 27, 27, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(127, 29, 29, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at center, #1a0000 0%, #000 100%);
             min-height: 100vh;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
+        
         .glassmorphic {
-            background: rgba(10, 0, 0, 0.9);
-            backdrop-filter: blur(12px);
+            background: rgba(10, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(153, 27, 27, 0.3);
-            box-shadow: 0 0 40px rgba(153, 27, 27, 0.2);
-            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(153, 27, 27, 0.15);
+            border-radius: 20px;
         }
+        
         .catalog-item {
-            background-color: #0a0a0a;
-            border: 1px solid rgba(153, 27, 27, 0.2);
-            transition: all 0.2s ease-out;
-            color: #666;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 100%);
+            border: 1.5px solid rgba(153, 27, 27, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #888;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .catalog-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .catalog-item:hover::before {
+            left: 100%;
+        }
+        
         .catalog-item:hover {
             border-color: #991b1b;
             color: #ef4444;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(153, 27, 27, 0.3);
         }
+        
         .catalog-item.selected {
-            background: linear-gradient(145deg, #7f1d1d, #450a0a);
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
             color: #fff;
             border-color: #ef4444;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            box-shadow: 
+                0 0 20px rgba(239, 68, 68, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
+        
+        .catalog-item.selected .catalog-icon {
+            color: #fef2f2;
+        }
+        
         .install-button {
-            background: #991b1b;
+            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
             color: #fff;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 900;
+            letter-spacing: 2px;
+            font-weight: 800;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(153, 27, 27, 0.4);
         }
+        
         .install-button:hover:not(:disabled) {
-            background: #ef4444;
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+            box-shadow: 0 6px 30px rgba(239, 68, 68, 0.6);
+            transform: translateY(-2px);
         }
-        /* Efeito de scanline clássico de filme de terror */
+        
+        .install-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        /* Efeito de scanline */
         body::after {
             content: " ";
             display: block;
@@ -82,67 +133,175 @@
             z-index: 100;
             background-size: 100% 4px;
             pointer-events: none;
-            opacity: 0.2;
+            opacity: 0.15;
+        }
+        
+        .category-badge {
+            font-size: 9px;
+            letter-spacing: 1px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s;
+        }
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
+        }
+        
+        .stats-box {
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.2) 0%, rgba(153, 27, 27, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
         }
     </style>
 </head>
-<body class="text-horror-text py-8 px-4">
-    <div id="app" v-cloak class="max-w-2xl mx-auto">
-        <div class="text-center mb-10">
-            <h1 class="text-5xl font-black tracking-tighter text-horror-blood uppercase italic drop-shadow-[0_0_15px_rgba(153,27,27,0.8)]">Horror Archive</h1>
-            <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mt-2">The definitive collection of supernatural files</p>
+<body class="text-horror-text py-6 px-4">
+    <div id="app" v-cloak class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fas fa-skull text-horror-blood text-5xl animate-float"></i>
+            </div>
+            <h1 class="text-6xl font-black tracking-tighter text-horror-blood uppercase mb-2">
+                Horror Archive
+            </h1>
+            <p class="text-xs text-gray-500 uppercase tracking-[0.4em] mb-1">
+                The Ultimate Horror Collection
+            </p>
+            <p class="text-[10px] text-horror-accent font-mono">
+                v12.0.0 • 500+ Films & Series • 24 Catalogs
+            </p>
         </div>
         
-        <div class="glassmorphic p-8">
-            <div class="flex justify-between items-center mb-6 border-b border-horror-blood/30 pb-4">
-                <h2 class="text-sm uppercase tracking-widest text-horror-accent font-bold">Files to decrypt:</h2>
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-8 max-w-2xl mx-auto">
+            <div class="stats-box p-4 text-center">
+                <div class="text-3xl font-black text-horror-accent mb-1">{{ selectedCatalogs.length }}</div>
+                <div class="text-[10px] text-gray-500 uppercase tracking-wider">Selected</div>
+            </div>
+            <div class="stats-box p-4 text-center">
+                <div class="text-3xl font-black text-horror-accent mb-1">{{ totalFilms }}</div>
+                <div class="text-[10px] text-gray-500 uppercase tracking-wider">Films</div>
+            </div>
+            <div class="stats-box p-4 text-center">
+                <div class="text-3xl font-black text-horror-accent mb-1">24</div>
+                <div class="text-[10px] text-gray-500 uppercase tracking-wider">Catalogs</div>
+            </div>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="glassmorphic p-8 mb-6">
+            <!-- Controls -->
+            <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-horror-blood/30 gap-4">
+                <div>
+                    <h2 class="text-sm uppercase tracking-widest text-horror-accent font-bold mb-1">
+                        Configure Your Collection
+                    </h2>
+                    <p class="text-[10px] text-gray-600">Select catalogs to include in your addon</p>
+                </div>
                 
-                <button @click="toggleAll" class="px-4 py-1 rounded-full text-[10px] border border-horror-blood/50 text-horror-accent uppercase font-bold tracking-widest hover:bg-horror-blood hover:text-white transition-all">
-                    <i :class="allSelected ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                    {{ allSelected ? 'Discard All' : 'Awaken All' }}
+                <div class="flex gap-2">
+                    <button @click="selectByCategory('all')" class="px-4 py-2 rounded-lg text-[10px] border border-horror-blood/50 text-horror-accent uppercase font-bold tracking-wider hover:bg-horror-blood hover:text-white transition-all">
+                        <i class="fas fa-check-double mr-1"></i>
+                        Select All
+                    </button>
+                    <button @click="clearAll" class="px-4 py-2 rounded-lg text-[10px] border border-gray-700 text-gray-500 uppercase font-bold tracking-wider hover:bg-gray-800 hover:text-white transition-all">
+                        <i class="fas fa-times mr-1"></i>
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button 
+                    v-for="cat in categories" 
+                    :key="cat.id"
+                    @click="selectByCategory(cat.id)"
+                    class="category-badge bg-horror-card border border-horror-blood/30 text-gray-500 hover:bg-horror-blood hover:text-white hover:border-horror-accent transition-all cursor-pointer uppercase"
+                >
+                    {{ cat.name }}
                 </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+            <!-- Catalogs Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
                 <div 
                     v-for="catalog in catalogs" 
                     :key="catalog.id" 
                     @click="toggleCatalog(catalog)"
-                    :class="['catalog-item p-4 rounded-md cursor-pointer flex items-center justify-between', {'selected': selectedCatalogs.includes(catalog.id)}]"
+                    :class="['catalog-item p-4 rounded-xl cursor-pointer', {'selected': selectedCatalogs.includes(catalog.id)}]"
                 >
-                    <div class="flex items-center space-x-3">
-                        <i :class="['fas', selectedCatalogs.includes(catalog.id) ? 'fa-skull' : 'fa-ghost']"></i>
-                        <span class="font-bold text-[11px] uppercase tracking-tight">{{ catalog.name }}</span>
+                    <div class="flex items-start justify-between mb-2">
+                        <span class="catalog-icon text-2xl">{{ catalog.icon }}</span>
+                        <i v-if="selectedCatalogs.includes(catalog.id)" class="fas fa-check-circle text-white text-sm"></i>
+                        <i v-else class="far fa-circle text-gray-700 text-sm"></i>
                     </div>
-                    <i v-if="selectedCatalogs.includes(catalog.id)" class="fas fa-check text-[10px]"></i>
+                    <div>
+                        <h3 class="font-bold text-xs uppercase tracking-tight mb-1">{{ catalog.name }}</h3>
+                        <p class="text-[9px] text-gray-600">{{ catalog.count }} items</p>
+                    </div>
                 </div>
             </div>
 
-            <button @click="generateLink" :disabled="selectedCatalogs.length === 0" class="install-button w-full py-5 rounded-sm disabled:opacity-30 animate-pulse-slow">
-                Generate Archive Link
+            <!-- Install Button -->
+            <button 
+                @click="generateLink" 
+                :disabled="selectedCatalogs.length === 0" 
+                class="install-button w-full py-6 rounded-xl text-sm"
+            >
+                <i class="fas fa-download mr-2"></i>
+                {{ selectedCatalogs.length === 0 ? 'Select at least one catalog' : 'Install to Stremio' }}
             </button>
         </div>
 
+        <!-- Footer Info -->
+        <div class="text-center text-[10px] text-gray-700 space-y-1">
+            <p>
+                <i class="fas fa-info-circle mr-1"></i>
+                This addon provides catalogs only. Install <strong class="text-horror-accent">Torrentio</strong> for streams.
+            </p>
+            <p>
+                <i class="fab fa-github mr-1"></i>
+                Open source on <a href="https://github.com/blaumath/Horror-Archive" class="text-horror-accent hover:underline">GitHub</a>
+            </p>
+        </div>
+
+        <!-- Install Modal -->
         <transition name="fade">
-            <div v-if="showInstallPanel" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4 backdrop-blur-md">
-                <div class="bg-zinc-950 border-2 border-horror-blood p-8 rounded-none max-w-sm w-full shadow-[0_0_70px_rgba(153,27,27,0.4)] text-center">
-                    <div class="mb-6">
-                        <i class="fas fa-unlock-alt text-horror-blood text-4xl mb-4"></i>
-                        <h3 class="text-horror-accent font-black uppercase tracking-widest italic">Encrypted URL Ready</h3>
+            <div v-if="showInstallPanel" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4 backdrop-blur-md" @click.self="showInstallPanel = false">
+                <div class="glassmorphic p-8 max-w-md w-full shadow-[0_0_70px_rgba(153,27,27,0.4)]">
+                    <div class="text-center mb-6">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-horror-blood/20 mb-4">
+                            <i class="fas fa-skull text-horror-blood text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-black uppercase tracking-wider text-horror-accent mb-2">Ready to Install</h3>
+                        <p class="text-xs text-gray-500">Your custom Horror Archive addon is ready</p>
                     </div>
                     
-                    <div class="bg-black/50 p-3 mb-6 rounded border border-white/5">
-                        <p class="text-[10px] text-zinc-500 break-all font-mono">{{ installUrl }}</p>
+                    <div class="bg-black/70 p-4 mb-6 rounded-lg border border-horror-blood/20">
+                        <p class="text-[9px] text-gray-500 break-all font-mono leading-relaxed">{{ installUrl }}</p>
                     </div>
 
-                    <div class="flex flex-col gap-4">
-                        <a :href="stremioUrl" class="install-button py-4 rounded-sm text-sm flex items-center justify-center gap-2">
-                            <i class="fas fa-download"></i> Install to Stremio
+                    <div class="space-y-3 mb-4">
+                        <a :href="stremioUrl" class="install-button w-full py-4 rounded-xl text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-download"></i> 
+                            Install to Stremio
                         </a>
-                        <button @click="copyToClipboard" class="bg-zinc-900 text-horror-blood border border-horror-blood/30 py-4 rounded-sm text-xs uppercase font-bold hover:bg-horror-blood hover:text-white transition">
-                            <i class="fas fa-copy mr-2"></i> {{ copied ? 'Link Copied!' : 'Copy Manifesto URL' }}
+                        <button @click="copyToClipboard" class="w-full bg-zinc-900 text-horror-accent border border-horror-blood/30 py-4 rounded-xl text-xs uppercase font-bold hover:bg-horror-blood hover:text-white hover:border-horror-accent transition-all">
+                            <i class="fas fa-copy mr-2"></i> 
+                            {{ copied ? '✓ Copied!' : 'Copy Manifest URL' }}
                         </button>
-                        <button @click="showInstallPanel = false" class="text-gray-600 text-[10px] mt-2 uppercase tracking-widest hover:text-white underline">Back to Shadows</button>
+                    </div>
+
+                    <div class="text-center">
+                        <button @click="showInstallPanel = false" class="text-gray-600 text-[10px] uppercase tracking-widest hover:text-horror-accent transition-all">
+                            <i class="fas fa-arrow-left mr-1"></i>
+                            Back to Configuration
+                        </button>
                     </div>
                 </div>
             </div>
@@ -154,17 +313,46 @@
             el: '#app',
             data: {
                 catalogs: [
-                    {id: 'cj-r', name: 'The Conjuring: Release'},
-                    {id: 'cj-t', name: 'The Conjuring: Timeline'},
-                    {id: 'sc', name: 'Scream: Full Saga'},
-                    {id: 'hw', name: 'Halloween: Complete'},
-                    {id: 'sw', name: 'Saw: Chronological'},
-                    {id: 'f13', name: 'Friday the 13th'},
-                    {id: 'ck', name: 'Chucky Saga'},
-                    {id: 'nm', name: 'A Nightmare on Elm Street'},
-                    {id: 'sk', name: 'Stephen King Archives'},
-                    {id: 'ms', name: 'Modern Sagas'},
-                    {id: 'tv', name: 'Horror TV Series'}
+                    // CLASSIC SLASHERS
+                    {id: 'halloween', name: 'Halloween Saga', icon: '🎃', count: 13, category: 'slasher'},
+                    {id: 'friday_13th', name: 'Friday the 13th', icon: '🔪', count: 12, category: 'slasher'},
+                    {id: 'nightmare', name: 'Nightmare on Elm St', icon: '💀', count: 9, category: 'slasher'},
+                    {id: 'scream', name: 'Scream Saga', icon: '📞', count: 6, category: 'slasher'},
+                    {id: 'chucky_saga', name: 'Chucky Saga', icon: '🔴', count: 8, category: 'slasher'},
+                    {id: 'saw', name: 'Saw Legacy', icon: '🧩', count: 10, category: 'slasher'},
+                    {id: 'texas_chainsaw', name: 'Texas Chainsaw', icon: '🪚', count: 9, category: 'slasher'},
+                    
+                    // SUPERNATURAL
+                    {id: 'conjuring_rel', name: 'Conjuring (Release)', icon: '👻', count: 9, category: 'supernatural'},
+                    {id: 'conjuring_time', name: 'Conjuring (Timeline)', icon: '⏳', count: 9, category: 'supernatural'},
+                    {id: 'insidious', name: 'Insidious Universe', icon: '🚪', count: 5, category: 'supernatural'},
+                    {id: 'paranormal', name: 'Paranormal Activity', icon: '📹', count: 7, category: 'supernatural'},
+                    
+                    // MODERN SAGAS
+                    {id: 'modern_horror', name: 'Modern Horror Sagas', icon: '🎬', count: 11, category: 'modern'},
+                    {id: 'final_dest', name: 'Final Destination', icon: '💀', count: 5, category: 'modern'},
+                    {id: 'resident_evil', name: 'Resident Evil', icon: '🧟', count: 7, category: 'modern'},
+                    {id: 'evil_dead', name: 'Evil Dead Saga', icon: '📖', count: 5, category: 'modern'},
+                    {id: 'hellraiser', name: 'Hellraiser', icon: '📦', count: 11, category: 'modern'},
+                    {id: 'a24_horror', name: 'A24 & Indie Horror', icon: '🎨', count: 12, category: 'modern'},
+                    
+                    // BY GENRE
+                    {id: 'classics', name: 'Horror Classics (60s-00s)', icon: '👑', count: 70, category: 'genre'},
+                    {id: 'psychological', name: 'Psychological Horror', icon: '🧠', count: 28, category: 'genre'},
+                    {id: 'found_footage', name: 'Found Footage', icon: '📼', count: 24, category: 'genre'},
+                    {id: 'zombies', name: 'Zombie Films', icon: '🧟‍♂️', count: 28, category: 'genre'},
+                    {id: 'asian_horror', name: 'Asian Horror', icon: '🎌', count: 27, category: 'genre'},
+                    
+                    // SPECIAL
+                    {id: 'stephen_king', name: 'Stephen King Collection', icon: '📚', count: 24, category: 'special'},
+                    {id: 'horror_series', name: 'Horror TV Series', icon: '📺', count: 30, category: 'special'},
+                ],
+                categories: [
+                    {id: 'slasher', name: 'Slasher'},
+                    {id: 'supernatural', name: 'Supernatural'},
+                    {id: 'modern', name: 'Modern'},
+                    {id: 'genre', name: 'By Genre'},
+                    {id: 'special', name: 'Special'},
                 ],
                 selectedCatalogs: [],
                 showInstallPanel: false,
@@ -175,37 +363,60 @@
             computed: {
                 allSelected() {
                     return this.selectedCatalogs.length === this.catalogs.length;
+                },
+                totalFilms() {
+                    return this.catalogs
+                        .filter(c => this.selectedCatalogs.includes(c.id))
+                        .reduce((sum, c) => sum + c.count, 0);
                 }
+            },
+            mounted() {
+                // Select all by default
+                this.selectByCategory('all');
             },
             methods: {
                 toggleCatalog(catalog) {
                     const index = this.selectedCatalogs.indexOf(catalog.id);
-                    if (index === -1) this.selectedCatalogs.push(catalog.id);
-                    else this.selectedCatalogs.splice(index, 1);
-                },
-                toggleAll() {
-                    if (this.allSelected) {
-                        this.selectedCatalogs = [];
+                    if (index === -1) {
+                        this.selectedCatalogs.push(catalog.id);
                     } else {
-                        this.selectedCatalogs = this.catalogs.map(c => c.id);
+                        this.selectedCatalogs.splice(index, 1);
                     }
                 },
+                selectByCategory(categoryId) {
+                    if (categoryId === 'all') {
+                        this.selectedCatalogs = this.catalogs.map(c => c.id);
+                    } else {
+                        const catalogsInCategory = this.catalogs
+                            .filter(c => c.category === categoryId)
+                            .map(c => c.id);
+                        
+                        catalogsInCategory.forEach(id => {
+                            if (!this.selectedCatalogs.includes(id)) {
+                                this.selectedCatalogs.push(id);
+                            }
+                        });
+                    }
+                },
+                clearAll() {
+                    this.selectedCatalogs = [];
+                },
                 generateLink() {
+                    if (this.selectedCatalogs.length === 0) return;
+                    
                     const host = window.location.host;
                     const protocol = window.location.protocol;
                     
-                    // LÓGICA DO LINK LIMPO:
-                    // Se todas as sagas estiverem selecionadas, não colocamos códigos na URL.
+                    // Se todos selecionados, link limpo
                     let manifestPath = "";
                     if (this.allSelected) {
                         manifestPath = "manifest.json";
                     } else {
-                        const config = this.selectedCatalogs.join(',');
+                        const config = this.selectedCatalogs.sort().join(',');
                         manifestPath = `${config}/manifest.json`;
                     }
                     
                     this.installUrl = `${protocol}//${host}/${manifestPath}`;
-                    // O Stremio usa o protocolo stremio:// para abrir o app direto
                     this.stremioUrl = `stremio://${host}/${manifestPath}`;
                     this.showInstallPanel = true;
                 },

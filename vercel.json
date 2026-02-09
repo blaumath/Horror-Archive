@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "horror-archive-addon",
   "builds": [
     {
       "src": "src/addon.js",
@@ -12,5 +11,56 @@
       "src": "/(.*)",
       "dest": "src/addon.js"
     }
-  ]
+  ],
+  "env": {
+    "TMDB_API_Key": "@tmdb_api_key"
+  },
+  "headers": [
+    {
+      "source": "/manifest.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/catalog/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "max-age=3600, stale-while-revalidate=86400"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/meta/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "max-age=3600"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ],
+  "regions": ["gru1"],
+  "functions": {
+    "src/addon.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
 }
