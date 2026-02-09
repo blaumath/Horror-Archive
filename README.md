@@ -2,9 +2,9 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-12.0.0-red)
-![Catalogs](https://img.shields.io/badge/catalogs-25+-darkred)
-![Films](https://img.shields.io/badge/films-500+-crimson)
+![Version](https://img.shields.io/badge/version-13.0.0-red)
+![Catalogs](https://img.shields.io/badge/catalogs-24+-darkred)
+![Films](https://img.shields.io/badge/films-700+-crimson)
 ![Status](https://img.shields.io/badge/status-production-green)
 
 **The most complete horror collection addon for Stremio**
@@ -15,7 +15,15 @@
 
 ---
 
+> 🔥 **ERRO PERSISTENTE DO VERCEL?** Dashboard está correto mas erro continua? → [**DEBUG AVANÇADO AQUI**](./DEBUG_VERCEL.md)
+
+> 🇧🇷 **ERRO NO VERCEL?** Guia de solução rápida → [**ERRO_VERCEL.md**](./ERRO_VERCEL.md)
+
+---
+
 ## 📦 Installation
+
+> 🇧🇷 **Usuários brasileiros:** Veja o [Guia de Configuração do Vercel](./VERCEL_SETUP.md) para configurar a chave de API do TMDB.
 
 ### 🛠️ Option 1: Custom Configuration (Recommended)
 Access the configuration page to customize your experience:  
@@ -36,17 +44,17 @@ https://horror-archive.vercel.app/manifest.json
 - 🔪 **Friday the 13th** (12 films)
 - 💀 **Nightmare on Elm Street** (9 films)
 - 📞 **Scream Saga** (6 films)
-- 🔴 **Chucky Saga** (8 films)
+- 🔴 **Chucky Saga** (9 films)
 - 🧩 **Saw Legacy** (10 films)
 - 🪚 **Texas Chainsaw Massacre** (9 films)
 
 ### 👻 Supernatural Universes
-- 👻 **The Conjuring Universe** (9 films) - Release & Timeline order
+- 👻 **The Conjuring Universe** (8 films) - Release & Timeline order
 - 🚪 **Insidious Universe** (5 films)
 - 📹 **Paranormal Activity** (7 films)
 
 ### 🎬 Modern Horror Sagas
-- 🎨 **A24 & Indie Horror** - Hereditary, Midsommar, The Witch, Talk to Me, etc.
+- 🎨 **A24 & Indie Horror** (16 films) - Hereditary, Midsommar, The Witch, Talk to Me, etc.
 - 🎬 **Modern Horror Sagas** - Terrifier trilogy, X trilogy, The Purge series
 - 💀 **Final Destination** (5 films)
 - 🧟 **Resident Evil** (7 films)
@@ -61,16 +69,16 @@ https://horror-archive.vercel.app/manifest.json
 - 🎌 **Asian Horror** - J-Horror (Ringu, Ju-on) & K-Horror (The Wailing, Train to Busan)
 
 ### 📚 Special Collections
-- 📚 **Stephen King Collection** - IT, The Shining, Pet Sematary, Carrie, etc.
-- 📺 **Horror TV Series** - From, Mike Flanagan Universe, American Horror Story, etc.
+- 📚 **Stephen King Collection** (69 items) - IT, The Shining, Pet Sematary, Carrie, etc.
+- 📺 **Horror TV Series** (85 series) - From, Mike Flanagan Universe, American Horror Story, etc.
 
 ---
 
 ## 🚀 Features
 
 ### ✨ Core Features
-- ✅ **500+ Horror Films & Series** carefully curated
-- ✅ **25+ Specialized Catalogs** organized by franchise, genre, and style
+- ✅ **700+ Horror Films & Series** carefully curated
+- ✅ **24 Specialized Catalogs** organized by franchise, genre, and style
 - ✅ **Chronological & Timeline Options** (e.g., Conjuring Universe)
 - ✅ **High-Quality Metadata** from TMDB (Portuguese & English)
 - ✅ **Verified IMDb IDs** - guaranteed correct streams
@@ -78,14 +86,15 @@ https://horror-archive.vercel.app/manifest.json
 - ✅ **Gzip Compression** - optimized bandwidth usage
 - ✅ **Works with Torrentio** - compatible with all major stream providers
 
-### 🎯 New in v12.0
-- 🆕 13 new catalogs added
-- 🆕 300+ films added to collection
-- 🐛 Fixed IMDb ID bugs (Conjuring Timeline)
-- ⚡ Performance improvements (50% faster loading)
-- 🎨 Enhanced metadata with directors, cast, ratings
-- 📱 Better mobile experience
-- 🌍 Multi-language support (PT-BR default)
+### 🎯 New in v13.0
+- 🆕 Updated catalog counts (700+ total items)
+- 🆕 Enhanced Chucky Saga (9 films)
+- 🆕 Expanded A24 collection (16 films)
+- 🆕 Massive Stephen King collection (69 items)
+- 🆕 Expanded Horror Series catalog (85 series)
+- 🐛 Fixed Vercel deployment configuration
+- 📝 Improved documentation and website
+- ⚡ Better configuration page experience
 
 ---
 
@@ -110,12 +119,32 @@ https://horror-archive.vercel.app/manifest.json
 - **NodeCache** - In-memory caching
 - **Compression** - Response compression
 
+### Optional Configuration
+
+#### TMDB API Key (Optional)
+The addon works perfectly without a TMDB API key, using fallback metadata sources. However, if you want enhanced metadata (cast, crew, directors, ratings), you can add a TMDB API key:
+
+**For local development:**
+1. Copy `.env.example` to `.env`
+2. Add your TMDB API key: `TMDB_API_Key=your_api_key_here`
+
+**For Vercel deployment:**
+📖 **[Complete Vercel Setup Guide (Portuguese)](./VERCEL_SETUP.md)** - Guia completo em português
+
+Quick steps:
+1. Go to your Vercel project settings
+2. Navigate to Environment Variables
+3. Add `TMDB_API_Key` with your API key value
+4. Redeploy the project
+
+*Note: Without the API key, the addon will still function normally using alternative metadata sources.*
+
 ---
 
 ## 📊 Statistics
 
-- **Total Films**: 500+
-- **Total Series**: 30+
+- **Total Films**: 700+
+- **Total Series**: 85+
 - **Franchises**: 20+
 - **Decades Covered**: 1960s - 2024
 - **Languages**: Portuguese, English
@@ -133,11 +162,27 @@ Found a bug or want to suggest a film?
 
 ---
 
-## 📜 Credits
+---
+
+## 🎯 Why Horror Archive?
+
+**Horror Archive** stands out as the most comprehensive horror collection for Stremio with:
+
+- **Unmatched Catalog Diversity**: 24 specialized catalogs covering classic slashers, supernatural universes, modern indie horror, and genre-specific collections
+- **Curated Quality**: Every film carefully selected and verified with correct IMDb IDs
+- **Smart Organization**: Multiple viewing options (chronological, timeline order, release order)
+- **Rich Metadata**: Enhanced information from TMDB including directors, cast, ratings, and descriptions
+- **Performance Optimized**: Smart caching and compression for lightning-fast browsing
+- **Always Updated**: Regular updates with new releases and classic additions
+- **Community Driven**: Open source and welcoming contributions from horror fans
+
+Whether you're a casual horror viewer or a hardcore enthusiast, Horror Archive provides the perfect gateway to discover and organize your horror watching experience.
+
+---
+
+## 📜 License & Credits
 
 This addon was built with ❤️ by horror fans, for horror fans.
-
-Original inspiration from [addon-007](https://github.com/joaogonp) by **joaogonp**.
 
 ---
 

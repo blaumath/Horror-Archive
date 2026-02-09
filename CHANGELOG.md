@@ -2,6 +2,50 @@
 
 All notable changes to Horror Archive will be documented in this file.
 
+## [13.0.0] - 2025-02-09
+
+### 🆕 Added
+- **Updated Catalog Counts**:
+  - Chucky Saga: 8 → 9 films
+  - A24 & Indie Horror: 12 → 16 films
+  - Stephen King Collection: 24 → 69 items
+  - Horror TV Series: 30 → 85 series
+  - Total content: 500+ → 700+ items
+
+- **Documentation Enhancements**:
+  - Added "Why Horror Archive?" section explaining key differentials
+  - Better organized catalog descriptions with accurate counts
+  - Improved statistics and feature highlights
+  - Enhanced README structure and readability
+
+### 🐛 Fixed
+- **Critical**: Verified Vercel deployment configuration uses modern `rewrites` instead of deprecated `builds`/`routes`
+- **Critical**: Removed non-existent secret reference from vercel.json that was causing deployment errors
+- **Critical**: Added detailed troubleshooting guide for Vercel environment variable configuration errors
+- **Conjuring Universe**: Corrected film count from 9 to 8 films
+
+### 🎨 Improvements
+- Updated website configuration page to v13.0.0
+- Updated all version badges and documentation
+- Better catalog count accuracy across all documentation
+- Improved user experience on configuration page
+- Removed outdated credits section per user request
+
+### 📝 Documentation
+- Comprehensive README overhaul with better organization
+- Updated technical details and API integration info
+- Enhanced installation instructions
+- Better feature descriptions and statistics
+- Added optional TMDB API key configuration instructions
+- **New**: Created `.env.example` for local development reference
+- **New**: Added complete Vercel setup guide in Portuguese (`VERCEL_SETUP.md`)
+- **New**: Added Portuguese reference in README for Brazilian users
+- **New**: Created quick troubleshooting guide (`ERRO_VERCEL.md`) for common deployment errors
+- **Enhanced**: Detailed instructions on how to correctly configure environment variables in Vercel
+- **Enhanced**: Clear warnings about Secret vs Environment Variable confusion
+
+---
+
 ## [12.0.0] - 2025-02-09
 
 ### 🆕 Added
