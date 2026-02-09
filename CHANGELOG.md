@@ -21,6 +21,7 @@ All notable changes to Horror Archive will be documented in this file.
 ### 🐛 Fixed
 - **Critical**: Verified Vercel deployment configuration uses modern `rewrites` instead of deprecated `builds`/`routes`
 - **Critical**: Removed non-existent secret reference from vercel.json that was causing deployment errors
+- **Critical**: Added detailed troubleshooting guide for Vercel environment variable configuration errors
 - **Conjuring Universe**: Corrected film count from 9 to 8 films
 
 ### 🎨 Improvements
@@ -39,6 +40,9 @@ All notable changes to Horror Archive will be documented in this file.
 - **New**: Created `.env.example` for local development reference
 - **New**: Added complete Vercel setup guide in Portuguese (`VERCEL_SETUP.md`)
 - **New**: Added Portuguese reference in README for Brazilian users
+- **New**: Created quick troubleshooting guide (`ERRO_VERCEL.md`) for common deployment errors
+- **Enhanced**: Detailed instructions on how to correctly configure environment variables in Vercel
+- **Enhanced**: Clear warnings about Secret vs Environment Variable confusion
 
 ---
 

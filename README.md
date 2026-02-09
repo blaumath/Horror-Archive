@@ -15,6 +15,10 @@
 
 ---
 
+> 🇧🇷 **ERRO NO VERCEL?** Se você está vendo `Environment Variable "TMDB_API_Key" references Secret`, leia → [**SOLUÇÃO AQUI (2 min)**](./ERRO_VERCEL.md)
+
+---
+
 ## 📦 Installation
 
 > 🇧🇷 **Usuários brasileiros:** Veja o [Guia de Configuração do Vercel](./VERCEL_SETUP.md) para configurar a chave de API do TMDB.
