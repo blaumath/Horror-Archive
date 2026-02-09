@@ -15,6 +15,8 @@
 
 ---
 
+> 🚨 **DEPLOY FALHANDO?** Você precisa fazer uma ação manual no Vercel Dashboard → [**LEIA AQUI PRIMEIRO (OBRIGATÓRIO)**](./README_FIRST.md)
+
 > 🇧🇷 **ERRO NO VERCEL?** Se você está vendo `Environment Variable "TMDB_API_Key" references Secret`, leia → [**SOLUÇÃO AQUI (2 min)**](./ERRO_VERCEL.md)
 
 ---

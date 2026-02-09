@@ -1,73 +1,140 @@
 # ⚠️ ERRO DE DEPLOYMENT NO VERCEL? LEIA AQUI!
 
+## 🚨 ATENÇÃO: AÇÃO MANUAL OBRIGATÓRIA
+
+**O código do repositório está 100% correto ✅**
+
+**O erro persiste porque existe uma variável configurada no VERCEL DASHBOARD que você precisa DELETAR MANUALMENTE.**
+
+---
+
 ## Você está vendo este erro?
 
 ```
 Environment Variable "TMDB_API_Key" references Secret "tmdb_api_key", which does not exist.
 ```
 
-## ✅ SOLUÇÃO RÁPIDA (2 minutos)
+## ✅ SOLUÇÃO OBRIGATÓRIA (2 minutos)
 
-### Passo 1: Acesse o Dashboard do Vercel
-1. Vá para: https://vercel.com/dashboard
-2. Clique no projeto **Horror-Archive**
+### 🎯 O que você PRECISA fazer no Vercel Dashboard:
 
-### Passo 2: Deletar a Variável Problemática
-1. Clique em **Settings** (no topo da página)
-2. No menu lateral, clique em **Environment Variables**
-3. Procure por `TMDB_API_Key`
-4. Clique nos **3 pontinhos (⋯)** ao lado dela
-5. Clique em **Delete**
-6. Confirme a exclusão
+1. **Acesse:** https://vercel.com/blaumaths-projects/horror-archive/settings/environment-variables
 
-### Passo 3: Adicionar Corretamente (se quiser metadados aprimorados)
-A chave de API do TMDB é **OPCIONAL**. O addon funciona perfeitamente sem ela.
+2. **Encontre** a variável `TMDB_API_Key` na lista
 
-**Se quiser metadados aprimorados (elenco, diretor, avaliações):**
+3. **Delete** essa variável:
+   - Clique nos **3 pontinhos (⋯)** ao lado
+   - Clique em **Delete**
+   - Confirme
 
-1. Obtenha uma chave grátis em: https://www.themoviedb.org/settings/api
-2. No Vercel, clique em **Add New**
-3. Preencha:
+4. **Redeploy:**
+   - Vá em **Deployments**
+   - Clique nos **3 pontinhos (⋯)** no último deployment
+   - Clique em **Redeploy**
+
+5. ✅ **Pronto!** Aguarde 2-3 minutos e o deploy funcionará.
+
+---
+
+## 🤔 Por que preciso fazer isso?
+
+**Situação atual:**
+- ✅ O `vercel.json` está correto (sem referência ao secret)
+- ✅ O código está perfeito
+- ❌ Mas existe uma variável no **Dashboard do Vercel** com valor `@tmdb_api_key`
+- ❌ Isso causa erro porque o Secret `tmdb_api_key` não existe
+
+**O código não pode deletar variáveis do Vercel Dashboard** - só você pode fazer isso!
+
+---
+
+## 📋 Passo a Passo Detalhado
+
+### 1. Acesse Environment Variables
+
+Link direto: https://vercel.com/blaumaths-projects/horror-archive/settings/environment-variables
+
+Ou manualmente:
+- Vá para https://vercel.com/dashboard
+- Clique em **horror-archive**
+- Clique em **Settings**
+- No menu lateral: **Environment Variables**
+
+### 2. Procure TMDB_API_Key
+
+Na lista de variáveis, procure por:
+- Nome: `TMDB_API_Key`
+- Valor: `@tmdb_api_key` (é esse que está causando problema!)
+
+### 3. Delete a variável
+
+- Clique nos **3 pontinhos (⋯)** à direita da variável
+- Selecione **Delete**
+- Confirme a exclusão
+
+### 4. Faça redeploy
+
+- Vá para **Deployments** (no menu superior)
+- Encontre o deployment mais recente (o que está com erro)
+- Clique nos **3 pontinhos (⋯)** à direita
+- Selecione **Redeploy**
+- Aguarde 2-3 minutos
+
+---
+
+## ✅ Como saber se funcionou?
+
+Após fazer redeploy:
+1. O Vercel bot vai comentar no PR
+2. Se der certo, vai aparecer ✅ (check verde)
+3. Se ainda der erro, aparecer ❌ novamente
+
+Se ainda der erro após deletar:
+- Aguarde mais alguns minutos
+- Tente limpar cache: Settings → Advanced → Clear Build Cache
+- Faça outro redeploy
+
+---
+
+## 🔑 Quer adicionar a chave TMDB corretamente? (Opcional)
+
+**A chave TMDB é OPCIONAL.** O addon funciona perfeitamente sem ela.
+
+Se quiser metadados aprimorados (elenco, diretor, avaliações):
+
+1. **Depois** de deletar e o deploy funcionar
+2. Obtenha chave grátis: https://www.themoviedb.org/settings/api
+3. No Vercel, clique **Add New** variable:
    - **Name:** `TMDB_API_Key`
-   - **Value:** Cole sua chave **DIRETAMENTE** (exemplo: `a1b2c3d4e5f6...`)
-     - ⚠️ **NÃO use** `@tmdb_api_key` - isso é um Secret, não a chave!
-     - ⚠️ Cole apenas os caracteres da chave, sem espaços ou aspas
-   - **Environment:** Selecione todas (Production, Preview, Development)
-4. Clique em **Save**
-
-### Passo 4: Redeploy
-1. Vá para a aba **Deployments**
-2. Clique nos **3 pontinhos (⋯)** no deployment mais recente
-3. Clique em **Redeploy**
-4. Aguarde alguns minutos
-
-### ✅ Pronto!
-O erro deve desaparecer e o deployment funcionará!
+   - **Value:** Sua chave REAL (ex: `a1b2c3d4e5f6...`)
+     - ⚠️ **NÃO coloque** `@tmdb_api_key`
+     - ⚠️ Cole a chave diretamente, sem @
+   - **Environment:** Todas
+4. **Save** e faça **Redeploy**
 
 ---
 
-## 🤔 O que aconteceu?
+## 🚀 Resumo Executivo
 
-O Vercel tem dois tipos de variáveis:
-- **Variável de Ambiente**: Valor direto (exemplo: `abc123xyz`)
-- **Secret**: Referência que começa com `@` (exemplo: `@meu_secret`)
+| O que | Status |
+|-------|--------|
+| Código no GitHub | ✅ Correto |
+| vercel.json | ✅ Correto |
+| Documentação | ✅ Completa |
+| **Variável no Vercel** | ❌ **Você precisa deletar** |
+| **Redeploy** | ❌ **Você precisa fazer** |
 
-Quando você coloca `@tmdb_api_key` como valor, o Vercel pensa que você quer usar um Secret chamado "tmdb_api_key". Como esse Secret não existe, dá erro.
-
-A solução é colocar a chave **diretamente** como valor, sem o `@`.
-
----
-
-## 📚 Mais Informações
-
-Para guia completo com screenshots e outras opções, veja:
-📖 **[VERCEL_SETUP.md](./VERCEL_SETUP.md)**
+**Tempo necessário:** 2 minutos
+**Dificuldade:** Fácil - só seguir os passos
 
 ---
 
-## 🆘 Ainda com problemas?
+## 📚 Mais informações
 
-Abra uma [issue no GitHub](https://github.com/blaumath/Horror-Archive/issues) com:
-- Print do erro
-- Print da página Environment Variables
-- Descrição do que você tentou
+- Guia completo: [VERCEL_SETUP.md](./VERCEL_SETUP.md)
+- Instruções detalhadas: [README_FIRST.md](./README_FIRST.md)
+
+---
+
+**Link direto para Environment Variables:**
+https://vercel.com/blaumaths-projects/horror-archive/settings/environment-variables
