@@ -6,9 +6,13 @@ module.exports = [
   { "title": "The Lighthouse", "imdbId": "tt7984734", "year": "2019" },
   { "title": "Saint Maud", "imdbId": "tt7557108", "year": "2019" },
   { "title": "Lamb", "imdbId": "tt9812474", "year": "2021" },
-  { "title": "X", "imdbId": "tt13560574", "year": "2022" },
-  { "title": "Pearl", "imdbId": "tt18925334", "year": "2022" },
-  { "title": "MaXXXine", "imdbId": "tt22048412", "year": "2024" },
   { "title": "Talk to Me", "imdbId": "tt10638522", "year": "2022" },
-  { "title": "Heretic", "imdbId": "tt28318136", "year": "2024" }
+  { "title": "Heretic", "imdbId": "tt28318136", "year": "2024" },
+  { "title": "Men", "imdbId": "tt13841850", "year": "2022" },
+  { "title": "Under the Skin", "imdbId": "tt1441395", "year": "2013" },
+  { "title": "Enemy", "imdbId": "tt2316411", "year": "2013" },
+  { "title": "The Monster", "imdbId": "tt3976144", "year": "2016" },
+  { "title": "A Ghost Story", "imdbId": "tt6265828", "year": "2017" },
+  { "title": "The Hole in the Ground", "imdbId": "tt6198946", "year": "2019" },
+  { "title": "In Fabric", "imdbId": "tt7464188", "year": "2018" }
 ];
