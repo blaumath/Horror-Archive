@@ -14,7 +14,7 @@ app.use(cors());
 app.use(compression()); // COMPRESSÃO GZIP/BROTLI
 
 // --- CHAVES ---
-const TMDB_API_KEY = process.env.TMDB_API_Key; 
+const TMDB_API_KEY = process.env.TMDB_API_KEY; 
 
 // --- IMPORTAR TODOS OS CATÁLOGOS ---
 const chuckyRelease = require('../Data/chuckyRelease');
