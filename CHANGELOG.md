@@ -36,6 +36,9 @@ All notable changes to Horror Archive will be documented in this file.
 - Enhanced installation instructions
 - Better feature descriptions and statistics
 - Added optional TMDB API key configuration instructions
+- **New**: Created `.env.example` for local development reference
+- **New**: Added complete Vercel setup guide in Portuguese (`VERCEL_SETUP.md`)
+- **New**: Added Portuguese reference in README for Brazilian users
 
 ---
 

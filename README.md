@@ -17,6 +17,8 @@
 
 ## 📦 Installation
 
+> 🇧🇷 **Usuários brasileiros:** Veja o [Guia de Configuração do Vercel](./VERCEL_SETUP.md) para configurar a chave de API do TMDB.
+
 ### 🛠️ Option 1: Custom Configuration (Recommended)
 Access the configuration page to customize your experience:  
 🔗 **[Configure Horror Archive](https://horror-archive.vercel.app)**
@@ -117,13 +119,17 @@ https://horror-archive.vercel.app/manifest.json
 The addon works perfectly without a TMDB API key, using fallback metadata sources. However, if you want enhanced metadata (cast, crew, directors, ratings), you can add a TMDB API key:
 
 **For local development:**
-1. Create a `.env` file in the root directory
-2. Add: `TMDB_API_Key=your_api_key_here`
+1. Copy `.env.example` to `.env`
+2. Add your TMDB API key: `TMDB_API_Key=your_api_key_here`
 
 **For Vercel deployment:**
+📖 **[Complete Vercel Setup Guide (Portuguese)](./VERCEL_SETUP.md)** - Guia completo em português
+
+Quick steps:
 1. Go to your Vercel project settings
 2. Navigate to Environment Variables
 3. Add `TMDB_API_Key` with your API key value
+4. Redeploy the project
 
 *Note: Without the API key, the addon will still function normally using alternative metadata sources.*
 
