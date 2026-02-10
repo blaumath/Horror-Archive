@@ -7,7 +7,7 @@ module.exports = [
   { "title": "Saint Maud", "imdbId": "tt7557108", "year": "2019" },
   { "title": "Lamb", "imdbId": "tt9812474", "year": "2021" },
   { "title": "Talk to Me", "imdbId": "tt10638522", "year": "2022" },
-  { "title": "Heretic", "imdbId": "tt28318136", "year": "2024" },
+  { "title": "Heretic", "imdbId": "tt28015403", "year": "2024" },
   { "title": "Men", "imdbId": "tt13841850", "year": "2022" },
   { "title": "Under the Skin", "imdbId": "tt1441395", "year": "2013" },
   { "title": "Enemy", "imdbId": "tt2316411", "year": "2013" },
