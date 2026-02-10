@@ -21,5 +21,8 @@ module.exports = [
   { "title": "The Conjuring 2", "imdbId": "tt3065204", "year": "2016" },
   
   // Story set in 1981
-  { "title": "The Conjuring: The Devil Made Me Do It", "imdbId": "tt7069210", "year": "2021" }
+  { "title": "The Conjuring: The Devil Made Me Do It", "imdbId": "tt7069210", "year": "2021" },
+  
+  // Story set in TBD (latest)
+  { "title": "The Conjuring: Last Rites", "imdbId": "tt20221068", "year": "2025" }
 ];

@@ -2,6 +2,43 @@
 
 All notable changes to Horror Archive will be documented in this file.
 
+## [13.0.0] - 2026-02-10
+
+### 🆕 Added
+- **Missing 2025 Films**:
+  - Final Destination: Bloodlines (2025)
+  - 28 Years Later (2025)
+  - The Conjuring: Last Rites (2025)
+  - Scream VII (2025)
+  - M3GAN franchise (M3GAN 2023, M3GAN 2.0 2025)
+
+### 🐛 Fixed
+- **Critical**: Fixed V/H/S/85 IMDb ID (was tt27911000 - Terrifier 3's ID, corrected to tt21430952)
+- **Vercel Compatibility**: Fixed `/configure` route to use `__dirname` instead of `process.cwd()`
+
+### ⚡ Performance & Cleanup
+- Removed unused `posterCache` variable and references
+- Removed unused `metaCache` variable (no TMDB functionality in use)
+- Removed unused `axios` dependency (no TMDB functionality in use)
+- Removed unused `p-limit` dependency
+- Removed unused `node-cache` dependency (no caching needed without meta functionality)
+- Cleaner health check endpoint (removed unused cache statistics)
+
+### 📦 Version Updates
+- Updated manifest to v13.0.0
+- Updated manifest ID to com.horror.archive.v13
+- Updated description to reflect 700+ films
+- Updated package.json to v4.0.0
+
+### 🎨 UI/Documentation
+- Updated configure.html with v13.0.0 and 700+ films count
+- Updated catalog counts in configure.html
+- Updated README badges and statistics
+- Updated decade range to 1960s - 2025
+- Simplified Credits section in README
+
+---
+
 ## [12.0.0] - 2025-02-09
 
 ### 🆕 Added

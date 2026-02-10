@@ -11,5 +11,8 @@ module.exports = [
   
   // --- THE NUN ---
   { "title": "The Nun", "imdbId": "tt5814060", "year": "2018" },
-  { "title": "The Nun II", "imdbId": "tt10160976", "year": "2023" }
+  { "title": "The Nun II", "imdbId": "tt10160976", "year": "2023" },
+  
+  // --- THE CONJURING (continued) ---
+  { "title": "The Conjuring: Last Rites", "imdbId": "tt20221068", "year": "2025" }
 ];

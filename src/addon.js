@@ -1,11 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const NodeCache = require("node-cache");
 const compression = require('compression');
-
-// --- CACHE CONFIGURAÇÃO (24h para posters) ---
-const posterCache = new NodeCache({ stdTTL: 86400 }); // 24 horas
 
 const app = express();
 app.use(cors());
@@ -78,10 +74,10 @@ const catalogsData = {
 
 // --- MANIFEST BASE ---
 const baseManifest = {
-    id: "com.horror.archive.v12",
+    id: "com.horror.archive.v13",
     name: "🎬 Horror Archive",
-    description: "The Ultimate Horror Collection - 500+ Films & Series | Optimized & Complete",
-    version: "12.0.0",
+    description: "The Ultimate Horror Collection - 700+ Films & Series | Optimized & Complete",
+    version: "13.0.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
     resources: ["catalog"], 
@@ -133,7 +129,10 @@ app.get('/catalog/:type/:id.json', (req, res) => {
 });
 
 // Página de configuração
-app.get('/configure', (req, res) => res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html')));
+app.get('/configure', (req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.sendFile(path.join(__dirname, 'public', 'configure.html'));
+});
 app.get('/', (req, res) => res.redirect('/configure'));
 
 // Health check
@@ -141,10 +140,7 @@ app.get('/health', (req, res) => {
     res.json({ 
         status: 'OK', 
         version: baseManifest.version,
-        catalogs: Object.keys(catalogsData).length,
-        cacheSize: {
-            poster: posterCache.keys().length
-        }
+        catalogs: Object.keys(catalogsData).length
     });
 });
 

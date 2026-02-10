@@ -2,9 +2,9 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-12.0.0-red)
+![Version](https://img.shields.io/badge/version-13.0.0-red)
 ![Catalogs](https://img.shields.io/badge/catalogs-25+-darkred)
-![Films](https://img.shields.io/badge/films-500+-crimson)
+![Films](https://img.shields.io/badge/films-700+-crimson)
 ![Status](https://img.shields.io/badge/status-production-green)
 
 **The most complete horror collection addon for Stremio**
@@ -35,7 +35,7 @@ https://horror-archive.vercel.app/manifest.json
 - 🎃 **Halloween Saga** (13 films)
 - 🔪 **Friday the 13th** (12 films)
 - 💀 **Nightmare on Elm Street** (9 films)
-- 📞 **Scream Saga** (6 films)
+- 📞 **Scream Saga** (7 films)
 - 🔴 **Chucky Saga** (8 films)
 - 🧩 **Saw Legacy** (10 films)
 - 🪚 **Texas Chainsaw Massacre** (9 films)
@@ -48,7 +48,7 @@ https://horror-archive.vercel.app/manifest.json
 ### 🎬 Modern Horror Sagas
 - 🎨 **A24 & Indie Horror** - Hereditary, Midsommar, The Witch, Talk to Me, etc.
 - 🎬 **Modern Horror Sagas** - Terrifier trilogy, X trilogy, The Purge series
-- 💀 **Final Destination** (5 films)
+- 💀 **Final Destination** (6 films)
 - 🧟 **Resident Evil** (7 films)
 - 📖 **Evil Dead Saga** (5 films)
 - 📦 **Hellraiser** (11 films)
@@ -69,7 +69,7 @@ https://horror-archive.vercel.app/manifest.json
 ## 🚀 Features
 
 ### ✨ Core Features
-- ✅ **500+ Horror Films & Series** carefully curated
+- ✅ **700+ Horror Films & Series** carefully curated
 - ✅ **25+ Specialized Catalogs** organized by franchise, genre, and style
 - ✅ **Chronological & Timeline Options** (e.g., Conjuring Universe)
 - ✅ **High-Quality Metadata** from TMDB (Portuguese & English)
@@ -78,14 +78,14 @@ https://horror-archive.vercel.app/manifest.json
 - ✅ **Gzip Compression** - optimized bandwidth usage
 - ✅ **Works with Torrentio** - compatible with all major stream providers
 
-### 🎯 New in v12.0
-- 🆕 13 new catalogs added
-- 🆕 300+ films added to collection
-- 🐛 Fixed IMDb ID bugs (Conjuring Timeline)
-- ⚡ Performance improvements (50% faster loading)
-- 🎨 Enhanced metadata with directors, cast, ratings
-- 📱 Better mobile experience
-- 🌍 Multi-language support (PT-BR default)
+### 🎯 New in v13.0
+- 🆕 Added missing 2025 releases (28 Years Later, Final Destination: Bloodlines, Conjuring 4, Scream 7)
+- 🆕 Added M3GAN franchise (M3GAN, M3GAN 2.0)
+- 🐛 Fixed V/H/S/85 IMDb ID (was using Terrifier 3's ID)
+- ⚡ Performance improvements - removed unused dependencies (axios, p-limit)
+- 🛡️ Better error handling on meta routes
+- 🎨 Updated to 700+ films & series
+- 🔧 Fixed /configure route for better Vercel compatibility
 
 ---
 
@@ -114,10 +114,10 @@ https://horror-archive.vercel.app/manifest.json
 
 ## 📊 Statistics
 
-- **Total Films**: 500+
+- **Total Films**: 700+
 - **Total Series**: 30+
 - **Franchises**: 20+
-- **Decades Covered**: 1960s - 2024
+- **Decades Covered**: 1960s - 2025
 - **Languages**: Portuguese, English
 - **Update Frequency**: Weekly
 
@@ -136,8 +136,6 @@ Found a bug or want to suggest a film?
 ## 📜 Credits
 
 This addon was built with ❤️ by horror fans, for horror fans.
-
-Original inspiration from [addon-007](https://github.com/joaogonp) by **joaogonp**.
 
 ---
 

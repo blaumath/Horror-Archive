@@ -26,5 +26,6 @@ module.exports = [
   { "title": "Zombieland: Double Tap", "imdbId": "tt1560220", "year": "2019" },
   { "title": "Peninsula", "imdbId": "tt8850222", "year": "2020" },
   { "title": "Army of the Dead", "imdbId": "tt0993840", "year": "2021" },
-  { "title": "Zombie Tidal Wave", "imdbId": "tt10806176", "year": "2019" }
+  { "title": "Zombie Tidal Wave", "imdbId": "tt10806176", "year": "2019" },
+  { "title": "28 Years Later", "imdbId": "tt14539740", "year": "2025" }
 ];
