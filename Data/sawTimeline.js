@@ -8,5 +8,4 @@ module.exports = [
   { "title": "Saw VI", "imdbId": "tt1233227", "year": "2009" },
   { "title": "Saw 3D (The Final Chapter)", "imdbId": "tt1477076", "year": "2010" },
   { "title": "Jigsaw", "imdbId": "tt3348730", "year": "2017" },
-  { "title": "Spiral: From the Book of Saw", "imdbId": "tt10342730", "year": "2021" }
 ];
