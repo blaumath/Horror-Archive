@@ -4,5 +4,5 @@ module.exports = [
   { "title": "Final Destination 3", "imdbId": "tt0414982", "year": "2006" },
   { "title": "The Final Destination", "imdbId": "tt1144884", "year": "2009" },
   { "title": "Final Destination 5", "imdbId": "tt1622979", "year": "2011" },
-  { "title": "Final Destination: Bloodlines", "imdbId": "tt18178258", "year": "2025" }
+  { "title": "Final Destination: Bloodlines", "imdbId": "tt9619824", "year": "2025" }
 ];
