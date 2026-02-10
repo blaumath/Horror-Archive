@@ -15,7 +15,6 @@ All notable changes to Horror Archive will be documented in this file.
 ### 🐛 Fixed
 - **Critical**: Fixed V/H/S/85 IMDb ID (was tt27911000 - Terrifier 3's ID, corrected to tt21430952)
 - **Vercel Compatibility**: Fixed `/configure` route to use `__dirname` instead of `process.cwd()`
-- **Error Handling**: Added try/catch to `/meta` route to prevent serverless crashes
 
 ### ⚡ Performance & Cleanup
 - Removed unused `posterCache` variable and references
