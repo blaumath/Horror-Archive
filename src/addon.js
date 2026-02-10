@@ -1,11 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const NodeCache = require("node-cache");
 const compression = require('compression');
-
-// --- CACHE CONFIGURAÇÃO (1h para metadata) ---
-const metaCache = new NodeCache({ stdTTL: 3600 }); // 1 hora
 
 const app = express();
 app.use(cors());
@@ -144,10 +140,7 @@ app.get('/health', (req, res) => {
     res.json({ 
         status: 'OK', 
         version: baseManifest.version,
-        catalogs: Object.keys(catalogsData).length,
-        cacheSize: {
-            meta: metaCache.keys().length
-        }
+        catalogs: Object.keys(catalogsData).length
     });
 });
 

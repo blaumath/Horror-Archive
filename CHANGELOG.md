@@ -19,10 +19,11 @@ All notable changes to Horror Archive will be documented in this file.
 
 ### ⚡ Performance & Cleanup
 - Removed unused `posterCache` variable and references
+- Removed unused `metaCache` variable (no TMDB functionality in use)
 - Removed unused `axios` dependency (no TMDB functionality in use)
 - Removed unused `p-limit` dependency
-- Updated cache system to use `metaCache` only
-- Cleaner health check endpoint
+- Removed unused `node-cache` dependency (no caching needed without meta functionality)
+- Cleaner health check endpoint (removed unused cache statistics)
 
 ### 📦 Version Updates
 - Updated manifest to v13.0.0
