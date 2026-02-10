@@ -14,5 +14,9 @@ module.exports = [
   { "title": "The Purge: Anarchy", "imdbId": "tt2975578", "year": "2014" },
   { "title": "The Purge: Election Year", "imdbId": "tt4094724", "year": "2016" },
   { "title": "The First Purge", "imdbId": "tt6133466", "year": "2018" },
-  { "title": "The Forever Purge", "imdbId": "tt10327252", "year": "2021" }
+  { "title": "The Forever Purge", "imdbId": "tt10327252", "year": "2021" },
+  
+  // --- M3GAN ---
+  { "title": "M3GAN", "imdbId": "tt11128440", "year": "2023" },
+  { "title": "M3GAN 2.0", "imdbId": "tt22478798", "year": "2025" }
 ];

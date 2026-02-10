@@ -4,5 +4,6 @@ module.exports = [
   { "title": "Scream 3", "imdbId": "tt0134084", "year": "2000" },
   { "title": "Scream 4", "imdbId": "tt1262416", "year": "2011" },
   { "title": "Scream", "imdbId": "tt11245972", "year": "2022" },
-  { "title": "Scream VI", "imdbId": "tt17663992", "year": "2023" }
+  { "title": "Scream VI", "imdbId": "tt17663992", "year": "2023" },
+  { "title": "Scream VII", "imdbId": "tt23468450", "year": "2025" }
 ];

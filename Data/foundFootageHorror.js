@@ -16,7 +16,7 @@ module.exports = [
   { "title": "V/H/S: Viral", "imdbId": "tt3491166", "year": "2014" },
   { "title": "V/H/S/94", "imdbId": "tt14867006", "year": "2021" },
   { "title": "V/H/S/99", "imdbId": "tt21822590", "year": "2022" },
-  { "title": "V/H/S/85", "imdbId": "tt27911000", "year": "2023" },
+  { "title": "V/H/S/85", "imdbId": "tt21430952", "year": "2023" },
   
   // --- OUTROS CLÁSSICOS ---
   { "title": "Cloverfield", "imdbId": "tt1060277", "year": "2008" },
