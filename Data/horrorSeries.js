@@ -11,6 +11,7 @@ module.exports = [
   // --- MODERN HORROR HITS ---
   { "title": "FROM", "imdbId": "tt9813792", "year": "2022", "type": "series" },
   { "title": "American Horror Story", "imdbId": "tt1844624", "year": "2011", "type": "series" },
+  { "title": "American Horror Stories", "imdbId": "tt12306692", "year": "2021", "type": "series" },
   { "title": "Evil", "imdbId": "tt9055008", "year": "2019", "type": "series" },
   { "title": "The Terror", "imdbId": "tt2708480", "year": "2018", "type": "series" },
   { "title": "Servant", "imdbId": "tt8068860", "year": "2019", "type": "series" },
