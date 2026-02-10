@@ -8,6 +8,6 @@ module.exports = [
   { "title": "Hellraiser: Deader", "imdbId": "tt0279808", "year": "2005" },
   { "title": "Hellraiser: Hellworld", "imdbId": "tt0354623", "year": "2005" },
   { "title": "Hellraiser: Revelations", "imdbId": "tt1716747", "year": "2011" },
-  { "title": "Hellraiser: Judgment", "imdbId": "tt6288512", "year": "2018" },
+  { "title": "Hellraiser: Judgment", "imdbId": "tt5476182", "year": "2018" },
   { "title": "Hellraiser (2022)", "imdbId": "tt11712058", "year": "2022" }
 ];
