@@ -11,7 +11,7 @@ module.exports = [
   { "title": "Shaun of the Dead", "imdbId": "tt0365748", "year": "2004" },
   { "title": "Land of the Dead", "imdbId": "tt0418819", "year": "2005" },
   { "title": "[REC]", "imdbId": "tt1038988", "year": "2007" },
-  { "title": "Diary of the Dead", "imdbId": "tt0815417", "year": "2007" },
+  { "title": "Diary of the Dead", "imdbId": "tt0848557", "year": "2007" },
   { "title": "Pontypool", "imdbId": "tt1226681", "year": "2008" },
   { "title": "Zombieland", "imdbId": "tt1156398", "year": "2009" },
   { "title": "Survival of the Dead", "imdbId": "tt1134854", "year": "2009" },
@@ -26,6 +26,6 @@ module.exports = [
   { "title": "Zombieland: Double Tap", "imdbId": "tt1560220", "year": "2019" },
   { "title": "Peninsula", "imdbId": "tt8850222", "year": "2020" },
   { "title": "Army of the Dead", "imdbId": "tt0993840", "year": "2021" },
-  { "title": "Zombie Tidal Wave", "imdbId": "tt10806176", "year": "2019" },
-  { "title": "28 Years Later", "imdbId": "tt14539740", "year": "2025" }
+  { "title": "Zombie Tidal Wave", "imdbId": "tt10551118", "year": "2019" },
+  { "title": "28 Years Later", "imdbId": "tt10548174", "year": "2025" }
 ];
