@@ -17,6 +17,6 @@ module.exports = [
   { "title": "The Forever Purge", "imdbId": "tt10327252", "year": "2021" },
   
   // --- M3GAN ---
-  { "title": "M3GAN", "imdbId": "tt8760708", "year": "2023" },
+  { "title": "M3GAN", "imdbId": "tt8760708", "year": "2022" },
   { "title": "M3GAN 2.0", "imdbId": "tt33339162", "year": "2025" }
 ];
