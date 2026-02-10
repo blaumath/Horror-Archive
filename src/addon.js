@@ -1,20 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const axios = require('axios');
 const NodeCache = require("node-cache");
 const compression = require('compression');
 
-// --- CACHE CONFIGURAÇÃO (24h para posters, 1h para metadados) ---
+// --- CACHE CONFIGURAÇÃO (24h para posters) ---
 const posterCache = new NodeCache({ stdTTL: 86400 }); // 24 horas
-const metaCache = new NodeCache({ stdTTL: 3600 }); // 1 hora
 
 const app = express();
 app.use(cors());
 app.use(compression()); // COMPRESSÃO GZIP/BROTLI
-
-// --- CHAVES ---
-const TMDB_API_KEY = process.env.TMDB_API_KEY; 
 
 // --- IMPORTAR TODOS OS CATÁLOGOS ---
 const chuckyRelease = require('../Data/chuckyRelease');
@@ -89,7 +84,7 @@ const baseManifest = {
     version: "12.0.0",
     logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
     background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
-    resources: ["catalog", "meta"], 
+    resources: ["catalog"], 
     types: ["movie", "series", "Horror Archive"], 
     idPrefixes: ["tt"], 
     catalogs: Object.keys(catalogsData).map(key => ({
@@ -107,49 +102,6 @@ const baseManifest = {
         p2p: false
     }
 };
-
-// --- FUNÇÃO OTIMIZADA PARA BUSCAR METADADOS DO TMDB ---
-async function fetchFullMetadata(imdbId, type) {
-    const cacheKey = `meta_${imdbId}`;
-    const cached = metaCache.get(cacheKey);
-    if (cached) return cached;
-
-    if (!TMDB_API_KEY) return null;
-
-    try {
-        const findUrl = `https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id&language=pt-BR`;
-        const findRes = await axios.get(findUrl, { timeout: 5000 });
-        const basic = findRes.data.movie_results[0] || findRes.data.tv_results[0];
-        const tmdbType = findRes.data.movie_results[0] ? 'movie' : 'tv';
-
-        if (basic) {
-            const detailUrl = `https://api.themoviedb.org/3/${tmdbType}/${basic.id}?api_key=${TMDB_API_KEY}&append_to_response=credits,keywords&language=pt-BR`;
-            const d = (await axios.get(detailUrl, { timeout: 5000 })).data;
-
-            const meta = {
-                id: imdbId,
-                type: tmdbType === 'tv' ? 'series' : 'movie',
-                name: d.title || d.name,
-                description: d.overview || "Sinopse indisponível.",
-                releaseInfo: (d.release_date || d.first_air_date || "").substring(0, 4),
-                poster: d.poster_path ? `https://image.tmdb.org/t/p/w500${d.poster_path}` : `https://images.metahub.space/poster/medium/${imdbId}/img`,
-                background: d.backdrop_path ? `https://image.tmdb.org/t/p/original${d.backdrop_path}` : null,
-                runtime: d.runtime ? `${d.runtime} min` : null,
-                genres: d.genres?.map(g => g.name) || [],
-                cast: d.credits?.cast?.slice(0, 5).map(c => c.name) || [],
-                director: d.credits?.crew?.find(p => p.job === 'Director')?.name || null,
-                imdbRating: d.vote_average ? d.vote_average.toFixed(1) : "N/A",
-                popularity: d.popularity || 0
-            };
-            
-            metaCache.set(cacheKey, meta);
-            return meta;
-        }
-    } catch (e) { 
-        console.error(`Error fetching metadata for ${imdbId}:`, e.message);
-        return null; 
-    }
-}
 
 // --- ROTAS ---
 
@@ -180,26 +132,6 @@ app.get('/catalog/:type/:id.json', (req, res) => {
     res.json({ metas });
 });
 
-// Metadados detalhados
-app.get('/meta/:type/:id.json', async (req, res) => {
-    const imdbId = req.params.id.replace('.json', '');
-    const fullMeta = await fetchFullMetadata(imdbId, req.params.type);
-    
-    if (fullMeta) {
-        res.setHeader('Cache-Control', 'max-age=3600');
-        res.json({ meta: fullMeta });
-    } else {
-        res.json({ 
-            meta: { 
-                id: imdbId, 
-                type: req.params.type, 
-                name: "Horror Archive",
-                poster: `https://images.metahub.space/poster/medium/${imdbId}/img`
-            } 
-        });
-    }
-});
-
 // Página de configuração
 app.get('/configure', (req, res) => res.sendFile(path.join(process.cwd(), 'src', 'public', 'configure.html')));
 app.get('/', (req, res) => res.redirect('/configure'));
@@ -211,7 +143,6 @@ app.get('/health', (req, res) => {
         version: baseManifest.version,
         catalogs: Object.keys(catalogsData).length,
         cacheSize: {
-            meta: metaCache.keys().length,
             poster: posterCache.keys().length
         }
     });
