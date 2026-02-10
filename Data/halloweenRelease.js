@@ -8,7 +8,7 @@ module.exports = [
   { "title": "Halloween H20: 20 Years Later", "imdbId": "tt0120694", "year": "1998" },
   { "title": "Halloween: Resurrection", "imdbId": "tt0220506", "year": "2002" },
   { "title": "Halloween (Remake)", "imdbId": "tt0373883", "year": "2007" },
-  { "title": "Halloween II (Remake)", "imdbId": "tt22485786", "year": "2009" },
+  { "title": "Halloween II (Remake)", "imdbId": "tt1311067", "year": "2009" },
   { "title": "Halloween", "imdbId": "tt1502407", "year": "2018" },
   { "title": "Halloween Kills", "imdbId": "tt10665338", "year": "2021" },
   { "title": "Halloween Ends", "imdbId": "tt10665342", "year": "2022" }
