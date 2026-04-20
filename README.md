@@ -50,6 +50,7 @@ https://horror-archive.vercel.app/manifest.json
 - 🎬 **Modern Horror Sagas** - Terrifier trilogy, X trilogy, The Purge series
 - 💀 **Final Destination** (6 films)
 - 🧟 **Resident Evil** (7 films)
+- 👽 **Alien & Predator Timeline** (14 films)
 - 📖 **Evil Dead Saga** (5 films)
 - 📦 **Hellraiser** (11 films)
 
