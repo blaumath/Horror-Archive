@@ -81,4 +81,9 @@ module.exports = [
   { "title": "Scream Queens", "imdbId": "tt4145384", "year": "2015", "type": "series" },
   { "title": "Harper's Island", "imdbId": "tt1232320", "year": "2009", "type": "series" },
   { "title": "The Following", "imdbId": "tt2071645", "year": "2013", "type": "series" },
+
+  { "title": "Channel Zero", "imdbId": "tt4820370", "year": "2016", "type": "series" },
+  { "title": "Dead Set", "imdbId": "tt1285482", "year": "2008", "type": "series" },
+  { "title": "Les Revenants (The Returned)", "imdbId": "tt2521668", "year": "2012", "type": "series" },
+  { "title": "The Last of Us", "imdbId": "tt3581920", "year": "2023", "type": "series" },
 ];

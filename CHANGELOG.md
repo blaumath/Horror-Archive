@@ -2,6 +2,34 @@
 
 All notable changes to Horror Archive will be documented in this file.
 
+## [13.1.1] - 2026-04-20
+
+### 🆕 Added
+- **4 new horror TV series** to `Horror TV Series`: Channel Zero, Dead Set, Les Revenants (The Returned), and The Last of Us.
+- Added `scripts/validateCatalogs.js` to validate catalog structure (`title`, IMDb format, year, and duplicate IDs in each catalog).
+
+### ⚡ Quality Improvements
+- Added `npm run validate:data` script for faster catalog QA before releases.
+- Bumped manifest ID/version to `com.horror.archive.v13.1.1` / `13.1.1`.
+- Updated Configure page version string and synced catalog counts with Data files (including `Horror TV Series` = 71).
+
+---
+
+## [13.1.0] - 2026-04-20
+
+### 🐛 Fixed
+- **Config Manifest Selection**: `/[catalog_ids]/manifest.json` now properly returns only selected catalogs from Configure page.
+- **Addon Refresh**: Bumped manifest ID/version to force Stremio cache refresh after catalog updates.
+
+### 🆕 Added
+- **Alien & Predator Timeline** catalog (14 films) in chronological watch order.
+
+### 🎨 UI/Documentation
+- Updated Configure page to include the new Alien & Predator catalog.
+- Updated Configure page stats/version from 24 to 25 catalogs.
+
+---
+
 ## [13.0.0] - 2026-02-10
 
 ### 🆕 Added
