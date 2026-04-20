@@ -4,7 +4,8 @@
   "description": "The definitive horror archive for Stremio",
   "main": "src/addon.js",
   "scripts": {
-    "start": "node src/start.js"
+    "start": "node src/start.js",
+    "validate:data": "node scripts/validateCatalogs.js"
   },
   "dependencies": {
     "compression": "^1.7.4",
