@@ -150,14 +150,13 @@ app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (
     res.json({ metas });
 });
 
-// Página de configuração
 app.get('/configure', (req, res) => {
     res.setHeader('Content-Type', 'text/html');
     res.sendFile(path.join(__dirname, 'public', 'configure.html'));
 });
+
 app.get('/', (req, res) => res.redirect('/configure'));
 
-// Health check
 app.get('/health', (req, res) => {
     res.json({
         status: 'OK',
