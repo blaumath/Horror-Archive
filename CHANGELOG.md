@@ -2,6 +2,21 @@
 
 All notable changes to Horror Archive will be documented in this file.
 
+## [13.1.0] - 2026-04-20
+
+### 🐛 Fixed
+- **Config Manifest Selection**: `/[catalog_ids]/manifest.json` now properly returns only selected catalogs from Configure page.
+- **Addon Refresh**: Bumped manifest ID/version to force Stremio cache refresh after catalog updates.
+
+### 🆕 Added
+- **Alien & Predator Timeline** catalog (14 films) in chronological watch order.
+
+### 🎨 UI/Documentation
+- Updated Configure page to include the new Alien & Predator catalog.
+- Updated Configure page stats/version from 24 to 25 catalogs.
+
+---
+
 ## [13.0.0] - 2026-02-10
 
 ### 🆕 Added
