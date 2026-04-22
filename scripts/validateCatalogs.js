@@ -5,6 +5,8 @@ const dataDir = path.join(__dirname, '..', 'Data');
 const files = fs.readdirSync(dataDir).filter((file) => file.endsWith('.js'));
 
 let hasError = false;
+const globalIdMap = new Map();
+let warnings = 0;
 
 for (const file of files) {
     const catalog = require(path.join(dataDir, file));
@@ -16,6 +18,7 @@ for (const file of files) {
     }
 
     const seenIds = new Set();
+    const years = [];
 
     catalog.forEach((item, index) => {
         const context = `${file}#${index + 1}`;
@@ -30,8 +33,14 @@ for (const file of files) {
             hasError = true;
         }
 
-        if (!item.year || Number.isNaN(Number(item.year))) {
+        if (!item.year || !/^\d{4}$/.test(String(item.year))) {
             console.error(`❌ ${context} invalid year: ${item.year}`);
+            hasError = true;
+        }
+        years.push(Number(item.year));
+
+        if (item.type && !['movie', 'series'].includes(item.type)) {
+            console.error(`❌ ${context} invalid type: ${item.type} (expected movie|series)`);
             hasError = true;
         }
 
@@ -41,11 +50,36 @@ for (const file of files) {
         }
 
         seenIds.add(item.imdbId);
+
+        if (!globalIdMap.has(item.imdbId)) {
+            globalIdMap.set(item.imdbId, []);
+        }
+        globalIdMap.get(item.imdbId).push({ file, title: item.title });
     });
+
+    if (/timeline/i.test(file)) {
+        const hasOutOfOrderYears = years.some((year, index) => index > 0 && year < years[index - 1]);
+        if (hasOutOfOrderYears) {
+            warnings += 1;
+            console.log(`⚠️ ${file}: timeline years are not in ascending order (review ordering intent).`);
+        }
+    }
 }
 
 if (hasError) {
     process.exit(1);
+}
+
+const crossCatalogDuplicates = [...globalIdMap.entries()]
+    .filter(([, refs]) => new Set(refs.map((ref) => ref.file)).size > 1);
+
+if (crossCatalogDuplicates.length) {
+    warnings += 1;
+    console.log(`⚠️ Found ${crossCatalogDuplicates.length} IMDb IDs repeated across different catalogs (allowed, review for curation).`);
+}
+
+if (warnings > 0) {
+    console.log(`ℹ️ Validation finished with ${warnings} warning(s).`);
 }
 
 console.log(`✅ Catalog validation passed for ${files.length} files.`);
