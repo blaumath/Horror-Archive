@@ -87,3 +87,4 @@ module.exports = [
   { "title": "Les Revenants (The Returned)", "imdbId": "tt2521668", "year": "2012", "type": "series" },
   { "title": "The Last of Us", "imdbId": "tt3581920", "year": "2023", "type": "series" },
 ];
+
