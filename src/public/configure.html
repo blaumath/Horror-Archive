@@ -172,7 +172,8 @@
                 The Ultimate Horror Collection
             </p>
             <p class="text-[10px] text-horror-accent font-mono">
-                v13.1.2 • 700+ Films & Series • 25 Catalogs
+                v13.0.0 • 700+ Films & Series • 24 Catalogs
+                v{{ appVersion }} • {{ totalEntriesLabel }} Curated Entries • {{ totalCatalogs }} Catalogs
             </p>
         </div>
         
@@ -187,7 +188,8 @@
                 <div class="text-[10px] text-gray-500 uppercase tracking-wider">Films</div>
             </div>
             <div class="stats-box p-4 text-center">
-                <div class="text-3xl font-black text-horror-accent mb-1">25</div>
+                <div class="text-3xl font-black text-horror-accent mb-1">24</div>
+                <div class="text-3xl font-black text-horror-accent mb-1">{{ totalCatalogs }}</div>
                 <div class="text-[10px] text-gray-500 uppercase tracking-wider">Catalogs</div>
             </div>
         </div>
@@ -213,87 +215,7 @@
                         Clear
                     </button>
                 </div>
-            </div>
-
-            <!-- Quick Filters -->
-            <div class="flex flex-wrap gap-2 mb-6">
-                <button 
-                    v-for="cat in categories" 
-                    :key="cat.id"
-                    @click="selectByCategory(cat.id)"
-                    class="category-badge bg-horror-card border border-horror-blood/30 text-gray-500 hover:bg-horror-blood hover:text-white hover:border-horror-accent transition-all cursor-pointer uppercase"
-                >
-                    {{ cat.name }}
-                </button>
-            </div>
-
-            <!-- Catalogs Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
-                <div 
-                    v-for="catalog in catalogs" 
-                    :key="catalog.id" 
-                    @click="toggleCatalog(catalog)"
-                    :class="['catalog-item p-4 rounded-xl cursor-pointer', {'selected': selectedCatalogs.includes(catalog.id)}]"
-                >
-                    <div class="flex items-start justify-between mb-2">
-                        <span class="catalog-icon text-2xl">{{ catalog.icon }}</span>
-                        <i v-if="selectedCatalogs.includes(catalog.id)" class="fas fa-check-circle text-white text-sm"></i>
-                        <i v-else class="far fa-circle text-gray-700 text-sm"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-xs uppercase tracking-tight mb-1">{{ catalog.name }}</h3>
-                        <p class="text-[9px] text-gray-600">{{ catalog.count }} items</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Install Button -->
-            <button 
-                @click="generateLink" 
-                :disabled="selectedCatalogs.length === 0" 
-                class="install-button w-full py-6 rounded-xl text-sm"
-            >
-                <i class="fas fa-download mr-2"></i>
-                {{ selectedCatalogs.length === 0 ? 'Select at least one catalog' : 'Install to Stremio' }}
-            </button>
-        </div>
-
-        <!-- Footer Info -->
-        <div class="text-center text-[10px] text-gray-700 space-y-1">
-            <p>
-                <i class="fas fa-info-circle mr-1"></i>
-                This addon provides catalogs only. Install <strong class="text-horror-accent">Torrentio</strong> for streams.
-            </p>
-            <p>
-                <i class="fab fa-github mr-1"></i>
-                Open source on <a href="https://github.com/blaumath/Horror-Archive" class="text-horror-accent hover:underline">GitHub</a>
-            </p>
-        </div>
-
-        <!-- Install Modal -->
-        <transition name="fade">
-            <div v-if="showInstallPanel" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4 backdrop-blur-md" @click.self="showInstallPanel = false">
-                <div class="glassmorphic p-8 max-w-md w-full shadow-[0_0_70px_rgba(153,27,27,0.4)]">
-                    <div class="text-center mb-6">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-horror-blood/20 mb-4">
-                            <i class="fas fa-skull text-horror-blood text-3xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-black uppercase tracking-wider text-horror-accent mb-2">Ready to Install</h3>
-                        <p class="text-xs text-gray-500">Your custom Horror Archive addon is ready</p>
-                    </div>
-                    
-                    <div class="bg-black/70 p-4 mb-6 rounded-lg border border-horror-blood/20">
-                        <p class="text-[9px] text-gray-500 break-all font-mono leading-relaxed">{{ installUrl }}</p>
-                    </div>
-
-                    <div class="space-y-3 mb-4">
-                        <a :href="stremioUrl" class="install-button w-full py-4 rounded-xl text-sm flex items-center justify-center gap-2">
-                            <i class="fas fa-download"></i> 
-                            Install to Stremio
-                        </a>
-                        <button @click="copyToClipboard" class="w-full bg-zinc-900 text-horror-accent border border-horror-blood/30 py-4 rounded-xl text-xs uppercase font-bold hover:bg-horror-blood hover:text-white hover:border-horror-accent transition-all">
-                            <i class="fas fa-copy mr-2"></i> 
-                            {{ copied ? '✓ Copied!' : 'Copy Manifest URL' }}
+@@ -297,106 +297,135 @@
                         </button>
                     </div>
 
@@ -319,6 +241,7 @@
                     {id: 'nightmare', name: 'Nightmare on Elm St', icon: '💀', count: 9, category: 'slasher'},
                     {id: 'scream', name: 'Scream Saga', icon: '📞', count: 7, category: 'slasher'},
                     {id: 'chucky_saga', name: 'Chucky Saga', icon: '🔴', count: 8, category: 'slasher'},
+                    {id: 'saw', name: 'Saw Legacy', icon: '🧩', count: 10, category: 'slasher'},
                     {id: 'saw', name: 'Saw Legacy', icon: '🧩', count: 9, category: 'slasher'},
                     {id: 'texas_chainsaw', name: 'Texas Chainsaw', icon: '🪚', count: 9, category: 'slasher'},
                     
@@ -335,16 +258,22 @@
                     {id: 'alien_predator_timeline', name: 'Alien & Predator Timeline', icon: '👽', count: 14, category: 'modern'},
                     {id: 'evil_dead', name: 'Evil Dead Saga', icon: '📖', count: 5, category: 'modern'},
                     {id: 'hellraiser', name: 'Hellraiser', icon: '📦', count: 11, category: 'modern'},
+                    {id: 'a24_horror', name: 'A24 & Indie Horror', icon: '🎨', count: 12, category: 'modern'},
                     {id: 'a24_horror', name: 'A24 & Indie Horror', icon: '🎨', count: 16, category: 'modern'},
                     
                     // BY GENRE
+                    {id: 'classics', name: 'Horror Classics (60s-00s)', icon: '👑', count: 70, category: 'genre'},
                     {id: 'classics', name: 'Horror Classics (60s-00s)', icon: '👑', count: 51, category: 'genre'},
                     {id: 'psychological', name: 'Psychological Horror', icon: '🧠', count: 28, category: 'genre'},
+                    {id: 'found_footage', name: 'Found Footage', icon: '📼', count: 24, category: 'genre'},
                     {id: 'found_footage', name: 'Found Footage', icon: '📼', count: 21, category: 'genre'},
                     {id: 'zombies', name: 'Zombie Films', icon: '🧟‍♂️', count: 29, category: 'genre'},
+                    {id: 'asian_horror', name: 'Asian Horror', icon: '🎌', count: 27, category: 'genre'},
                     {id: 'asian_horror', name: 'Asian Horror', icon: '🎌', count: 26, category: 'genre'},
                     
                     // SPECIAL
+                    {id: 'stephen_king', name: 'Stephen King Collection', icon: '📚', count: 24, category: 'special'},
+                    {id: 'horror_series', name: 'Horror TV Series', icon: '📺', count: 30, category: 'special'},
                     {id: 'stephen_king', name: 'Stephen King Collection', icon: '📚', count: 67, category: 'special'},
                     {id: 'horror_series', name: 'Horror TV Series', icon: '📺', count: 71, category: 'special'},
                 ],
@@ -360,10 +289,21 @@
                 stremioUrl: '',
                 installUrl: '',
                 copied: false
+                copied: false,
+                appVersion: '13.2.3'
             },
             computed: {
                 allSelected() {
                     return this.selectedCatalogs.length === this.catalogs.length;
+                },
+                totalCatalogs() {
+                    return this.catalogs.length;
+                },
+                totalEntriesLabel() {
+                    return `${this.totalEntries}+`;
+                },
+                totalEntries() {
+                    return this.catalogs.reduce((sum, c) => sum + c.count, 0);
                 },
                 totalFilms() {
                     return this.catalogs
@@ -372,10 +312,29 @@
                 }
             },
             mounted() {
+            async mounted() {
+                await this.loadStats();
                 // Select all by default
                 this.selectByCategory('all');
             },
             methods: {
+                async loadStats() {
+                    try {
+                        const response = await fetch('/catalog-stats.json');
+                        if (!response.ok) return;
+
+                        const stats = await response.json();
+                        if (stats.version) this.appVersion = stats.version;
+
+                        const countById = stats.catalogStats || {};
+                        this.catalogs = this.catalogs.map((catalog) => ({
+                            ...catalog,
+                            count: countById[catalog.id] || catalog.count
+                        }));
+                    } catch (_) {
+                        // fallback silencioso para os valores estáticos
+                    }
+                },
                 toggleCatalog(catalog) {
                     const index = this.selectedCatalogs.indexOf(catalog.id);
                     if (index === -1) {
@@ -401,34 +360,5 @@
                 },
                 clearAll() {
                     this.selectedCatalogs = [];
-                },
-                generateLink() {
-                    if (this.selectedCatalogs.length === 0) return;
-                    
-                    const host = window.location.host;
-                    const protocol = window.location.protocol;
-                    
-                    // Se todos selecionados, link limpo
-                    let manifestPath = "";
-                    if (this.allSelected) {
-                        manifestPath = "manifest.json";
-                    } else {
-                        const config = this.selectedCatalogs.sort().join(',');
-                        manifestPath = `${config}/manifest.json`;
-                    }
-                    
-                    this.installUrl = `${protocol}//${host}/${manifestPath}`;
-                    this.stremioUrl = `stremio://${host}/${manifestPath}`;
-                    this.showInstallPanel = true;
-                },
-                copyToClipboard() {
-                    navigator.clipboard.writeText(this.installUrl).then(() => {
-                        this.copied = true;
-                        setTimeout(() => this.copied = false, 2000);
-                    });
-                }
-            }
-        });
-    </script>
-</body>
+
 </html>
