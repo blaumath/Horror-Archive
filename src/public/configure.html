@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎬 Horror Archive - Configure Your Collection</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <title>🎬 Horror Archive — Configure Your Collection</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -14,22 +14,21 @@
                 extend: {
                     colors: {
                         horror: {
-                            blood: '#991b1b', 
-                            dark: '#050505', 
-                            card: 'rgba(15, 0, 0, 0.9)',
-                            button: '#7f1d1d', 
-                            text: '#d1d5db',
-                            accent: '#ef4444' 
+                            blood:  '#991b1b',
+                            dark:   '#050505',
+                            card:   'rgba(15,0,0,0.9)',
+                            button: '#7f1d1d',
+                            text:   '#d1d5db',
+                            accent: '#ef4444'
                         }
                     },
                     animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' },
+                            '50%':      { transform: 'translateY(-10px)' },
                         }
                     }
                 }
@@ -38,70 +37,73 @@
     </script>
     <style>
         [v-cloak] { display: none; }
-        
+
         body {
             background-color: #000;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(153, 27, 27, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(127, 29, 29, 0.1) 0%, transparent 50%),
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(153,27,27,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(127,29,29,0.1) 0%, transparent 50%),
                 radial-gradient(circle at center, #1a0000 0%, #000 100%);
             min-height: 100vh;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
-        
+
+        /* Scanlines */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
         .glassmorphic {
-            background: rgba(10, 0, 0, 0.85);
+            background: rgba(10,0,0,0.85);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(153, 27, 27, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(153, 27, 27, 0.15);
+            border: 1px solid rgba(153,27,27,0.3);
+            box-shadow: 0 8px 32px rgba(153,27,27,0.15);
             border-radius: 20px;
         }
-        
+
         .catalog-item {
             background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 100%);
-            border: 1.5px solid rgba(153, 27, 27, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1.5px solid rgba(153,27,27,0.2);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             color: #888;
             position: relative;
             overflow: hidden;
         }
-        
+
         .catalog-item::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.1), transparent);
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(239,68,68,0.1), transparent);
             transition: left 0.5s;
         }
-        
-        .catalog-item:hover::before {
-            left: 100%;
-        }
-        
+
+        .catalog-item:hover::before { left: 100%; }
+
         .catalog-item:hover {
             border-color: #991b1b;
             color: #ef4444;
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(153, 27, 27, 0.3);
+            box-shadow: 0 4px 20px rgba(153,27,27,0.3);
         }
-        
+
         .catalog-item.selected {
             background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
             color: #fff;
             border-color: #ef4444;
-            box-shadow: 
-                0 0 20px rgba(239, 68, 68, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(239,68,68,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
             transform: translateY(-2px);
         }
-        
-        .catalog-item.selected .catalog-icon {
-            color: #fef2f2;
-        }
-        
+
         .install-button {
             background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
             color: #fff;
@@ -109,256 +111,309 @@
             letter-spacing: 2px;
             font-weight: 800;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(153, 27, 27, 0.4);
+            box-shadow: 0 4px 20px rgba(153,27,27,0.4);
         }
-        
         .install-button:hover:not(:disabled) {
             background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
-            box-shadow: 0 6px 30px rgba(239, 68, 68, 0.6);
+            box-shadow: 0 6px 30px rgba(239,68,68,0.6);
             transform: translateY(-2px);
         }
-        
-        .install-button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        /* Efeito de scanline */
-        body::after {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            z-index: 100;
-            background-size: 100% 4px;
-            pointer-events: none;
-            opacity: 0.15;
-        }
-        
-        .category-badge {
-            font-size: 9px;
-            letter-spacing: 1px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-        }
-        
-        .fade-enter-active, .fade-leave-active {
-            transition: opacity 0.3s;
-        }
-        .fade-enter, .fade-leave-to {
-            opacity: 0;
-        }
-        
+        .install-button:disabled { opacity: 0.3; cursor: not-allowed; }
+
         .stats-box {
-            background: linear-gradient(135deg, rgba(127, 29, 29, 0.2) 0%, rgba(153, 27, 27, 0.1) 100%);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background: linear-gradient(135deg, rgba(127,29,29,0.2) 0%, rgba(153,27,27,0.1) 100%);
+            border: 1px solid rgba(239,68,68,0.2);
             border-radius: 10px;
+        }
+
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+        .fade-enter, .fade-leave-to { opacity: 0; }
+
+        .url-box {
+            background: #0a0000;
+            border: 1px solid rgba(153,27,27,0.4);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #ef4444;
+            word-break: break-all;
+            padding: 12px;
         }
     </style>
 </head>
-<body class="text-horror-text py-6 px-4">
+<body class="text-gray-300 py-6 px-4">
     <div id="app" v-cloak class="max-w-5xl mx-auto">
+
         <!-- Header -->
         <div class="text-center mb-8">
-            <div class="flex items-center justify-center mb-4">
-                <i class="fas fa-skull text-horror-blood text-5xl animate-float"></i>
-            </div>
-            <h1 class="text-6xl font-black tracking-tighter text-horror-blood uppercase mb-2">
-                Horror Archive
-            </h1>
-            <p class="text-xs text-gray-500 uppercase tracking-[0.4em] mb-1">
-                The Ultimate Horror Collection
-            </p>
-            <p class="text-[10px] text-horror-accent font-mono">
-                v13.0.0 • 700+ Films & Series • 24 Catalogs
-                v{{ appVersion }} • {{ totalEntriesLabel }} Curated Entries • {{ totalCatalogs }} Catalogs
+            <i class="fas fa-skull text-red-800 text-5xl animate-float block mb-4"></i>
+            <h1 class="text-6xl font-black tracking-tighter text-red-800 uppercase mb-2">Horror Archive</h1>
+            <p class="text-xs text-gray-500 uppercase tracking-[0.4em] mb-1">The Ultimate Horror Collection for Stremio</p>
+            <p class="text-[11px] text-red-500 font-mono">
+                v{{ appVersion }} &bull; {{ totalEntries }}+ Curated Entries &bull; {{ totalCatalogs }} Catalogs
             </p>
         </div>
-        
-        <!-- Stats -->
+
+        <!-- Stats rápidas -->
         <div class="grid grid-cols-3 gap-4 mb-8 max-w-2xl mx-auto">
             <div class="stats-box p-4 text-center">
-                <div class="text-3xl font-black text-horror-accent mb-1">{{ selectedCatalogs.length }}</div>
+                <div class="text-3xl font-black text-red-500 mb-1">{{ selectedCatalogs.length }}</div>
                 <div class="text-[10px] text-gray-500 uppercase tracking-wider">Selected</div>
             </div>
             <div class="stats-box p-4 text-center">
-                <div class="text-3xl font-black text-horror-accent mb-1">{{ totalFilms }}</div>
-                <div class="text-[10px] text-gray-500 uppercase tracking-wider">Films</div>
+                <div class="text-3xl font-black text-red-500 mb-1">{{ selectedEntries }}</div>
+                <div class="text-[10px] text-gray-500 uppercase tracking-wider">Entries</div>
             </div>
             <div class="stats-box p-4 text-center">
-                <div class="text-3xl font-black text-horror-accent mb-1">24</div>
-                <div class="text-3xl font-black text-horror-accent mb-1">{{ totalCatalogs }}</div>
+                <div class="text-3xl font-black text-red-500 mb-1">{{ totalCatalogs }}</div>
                 <div class="text-[10px] text-gray-500 uppercase tracking-wider">Catalogs</div>
             </div>
         </div>
 
-        <!-- Main Panel -->
+        <!-- Painel principal -->
         <div class="glassmorphic p-8 mb-6">
-            <!-- Controls -->
-            <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-horror-blood/30 gap-4">
+
+            <!-- Controles -->
+            <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-red-900/30 gap-4">
                 <div>
-                    <h2 class="text-sm uppercase tracking-widest text-horror-accent font-bold mb-1">
-                        Configure Your Collection
-                    </h2>
+                    <h2 class="text-sm uppercase tracking-widest text-red-500 font-bold mb-1">Configure Your Collection</h2>
                     <p class="text-[10px] text-gray-600">Select catalogs to include in your addon</p>
                 </div>
-                
                 <div class="flex gap-2">
-                    <button @click="selectByCategory('all')" class="px-4 py-2 rounded-lg text-[10px] border border-horror-blood/50 text-horror-accent uppercase font-bold tracking-wider hover:bg-horror-blood hover:text-white transition-all">
-                        <i class="fas fa-check-double mr-1"></i>
-                        Select All
+                    <button @click="selectAll"
+                        class="px-4 py-2 rounded-lg text-[10px] border border-red-900/50 text-red-500 uppercase font-bold tracking-wider hover:bg-red-900 hover:text-white transition-all">
+                        <i class="fas fa-check-double mr-1"></i>Select All
                     </button>
-                    <button @click="clearAll" class="px-4 py-2 rounded-lg text-[10px] border border-gray-700 text-gray-500 uppercase font-bold tracking-wider hover:bg-gray-800 hover:text-white transition-all">
-                        <i class="fas fa-times mr-1"></i>
-                        Clear
+                    <button @click="clearAll"
+                        class="px-4 py-2 rounded-lg text-[10px] border border-gray-700 text-gray-500 uppercase font-bold tracking-wider hover:bg-gray-800 hover:text-white transition-all">
+                        <i class="fas fa-times mr-1"></i>Clear
                     </button>
                 </div>
-@@ -297,106 +297,135 @@
-                        </button>
-                    </div>
+            </div>
 
-                    <div class="text-center">
-                        <button @click="showInstallPanel = false" class="text-gray-600 text-[10px] uppercase tracking-widest hover:text-horror-accent transition-all">
-                            <i class="fas fa-arrow-left mr-1"></i>
-                            Back to Configuration
-                        </button>
+            <!-- Filtros por categoria -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button v-for="cat in categories" :key="cat.id"
+                    @click="filterCategory = filterCategory === cat.id ? null : cat.id"
+                    :class="['px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all border',
+                        filterCategory === cat.id
+                            ? 'bg-red-800 text-white border-red-600'
+                            : 'border-gray-700 text-gray-500 hover:border-red-900 hover:text-red-500']">
+                    {{ cat.name }}
+                </button>
+            </div>
+
+            <!-- Grid de catálogos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+                <button v-for="catalog in filteredCatalogs" :key="catalog.id"
+                    @click="toggleCatalog(catalog.id)"
+                    :class="['catalog-item rounded-xl p-4 text-left cursor-pointer', { selected: selectedCatalogs.includes(catalog.id) }]">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-xl">{{ catalog.icon }}</span>
+                            <p class="text-xs font-bold mt-1 leading-tight">{{ catalog.name }}</p>
+                        </div>
+                        <div class="text-right flex-shrink-0 ml-2">
+                            <span class="text-lg font-black">{{ catalog.count }}</span>
+                            <p class="text-[9px] text-gray-500 uppercase">entries</p>
+                        </div>
                     </div>
+                    <div class="mt-2">
+                        <span class="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full border"
+                            :class="categoryBadgeClass(catalog.category)">
+                            {{ catalog.category }}
+                        </span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Botão instalar -->
+            <button @click="showInstallPanel = true" :disabled="selectedCatalogs.length === 0"
+                class="install-button w-full py-4 rounded-xl text-sm">
+                <i class="fas fa-download mr-2"></i>
+                Install Selected Catalogs ({{ selectedCatalogs.length }})
+            </button>
+        </div>
+
+        <!-- Painel de instalação -->
+        <transition name="fade">
+            <div v-if="showInstallPanel" class="glassmorphic p-8 mb-6">
+                <h2 class="text-sm uppercase tracking-widest text-red-500 font-bold mb-6 text-center">
+                    <i class="fas fa-rocket mr-2"></i>Install Your Collection
+                </h2>
+
+                <div class="mb-6">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-2">Your Addon URL</p>
+                    <div class="url-box">{{ addonUrl }}</div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                    <!-- Abrir no Stremio Web -->
+                    <a :href="stremioWebUrl" target="_blank"
+                        class="install-button py-3 rounded-xl text-xs text-center block">
+                        <i class="fas fa-globe mr-2"></i>Stremio Web
+                    </a>
+                    <!-- Abrir no Stremio App -->
+                    <a :href="stremioAppUrl"
+                        class="install-button py-3 rounded-xl text-xs text-center block">
+                        <i class="fas fa-desktop mr-2"></i>Stremio App
+                    </a>
+                    <!-- Copiar URL -->
+                    <button @click="copyUrl"
+                        class="install-button py-3 rounded-xl text-xs">
+                        <i :class="copied ? 'fas fa-check' : 'fas fa-copy'" class="mr-2"></i>
+                        {{ copied ? 'Copied!' : 'Copy URL' }}
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <button @click="showInstallPanel = false"
+                        class="text-gray-600 text-[10px] uppercase tracking-widest hover:text-red-500 transition-all">
+                        <i class="fas fa-arrow-left mr-1"></i>Back to Configuration
+                    </button>
                 </div>
             </div>
         </transition>
+
     </div>
 
     <script>
         new Vue({
             el: '#app',
-            data: {
-                catalogs: [
-                    // CLASSIC SLASHERS
-                    {id: 'halloween', name: 'Halloween Saga', icon: '🎃', count: 13, category: 'slasher'},
-                    {id: 'friday_13th', name: 'Friday the 13th', icon: '🔪', count: 12, category: 'slasher'},
-                    {id: 'nightmare', name: 'Nightmare on Elm St', icon: '💀', count: 9, category: 'slasher'},
-                    {id: 'scream', name: 'Scream Saga', icon: '📞', count: 7, category: 'slasher'},
-                    {id: 'chucky_saga', name: 'Chucky Saga', icon: '🔴', count: 8, category: 'slasher'},
-                    {id: 'saw', name: 'Saw Legacy', icon: '🧩', count: 10, category: 'slasher'},
-                    {id: 'saw', name: 'Saw Legacy', icon: '🧩', count: 9, category: 'slasher'},
-                    {id: 'texas_chainsaw', name: 'Texas Chainsaw', icon: '🪚', count: 9, category: 'slasher'},
-                    
-                    // SUPERNATURAL
-                    {id: 'conjuring_rel', name: 'Conjuring (Release)', icon: '👻', count: 9, category: 'supernatural'},
-                    {id: 'conjuring_time', name: 'Conjuring (Timeline)', icon: '⏳', count: 9, category: 'supernatural'},
-                    {id: 'insidious', name: 'Insidious Universe', icon: '🚪', count: 5, category: 'supernatural'},
-                    {id: 'paranormal', name: 'Paranormal Activity', icon: '📹', count: 7, category: 'supernatural'},
-                    
-                    // MODERN SAGAS
-                    {id: 'modern_horror', name: 'Modern Horror Sagas', icon: '🎬', count: 13, category: 'modern'},
-                    {id: 'final_dest', name: 'Final Destination', icon: '💀', count: 6, category: 'modern'},
-                    {id: 'resident_evil', name: 'Resident Evil', icon: '🧟', count: 7, category: 'modern'},
-                    {id: 'alien_predator_timeline', name: 'Alien & Predator Timeline', icon: '👽', count: 14, category: 'modern'},
-                    {id: 'evil_dead', name: 'Evil Dead Saga', icon: '📖', count: 5, category: 'modern'},
-                    {id: 'hellraiser', name: 'Hellraiser', icon: '📦', count: 11, category: 'modern'},
-                    {id: 'a24_horror', name: 'A24 & Indie Horror', icon: '🎨', count: 12, category: 'modern'},
-                    {id: 'a24_horror', name: 'A24 & Indie Horror', icon: '🎨', count: 16, category: 'modern'},
-                    
-                    // BY GENRE
-                    {id: 'classics', name: 'Horror Classics (60s-00s)', icon: '👑', count: 70, category: 'genre'},
-                    {id: 'classics', name: 'Horror Classics (60s-00s)', icon: '👑', count: 51, category: 'genre'},
-                    {id: 'psychological', name: 'Psychological Horror', icon: '🧠', count: 28, category: 'genre'},
-                    {id: 'found_footage', name: 'Found Footage', icon: '📼', count: 24, category: 'genre'},
-                    {id: 'found_footage', name: 'Found Footage', icon: '📼', count: 21, category: 'genre'},
-                    {id: 'zombies', name: 'Zombie Films', icon: '🧟‍♂️', count: 29, category: 'genre'},
-                    {id: 'asian_horror', name: 'Asian Horror', icon: '🎌', count: 27, category: 'genre'},
-                    {id: 'asian_horror', name: 'Asian Horror', icon: '🎌', count: 26, category: 'genre'},
-                    
-                    // SPECIAL
-                    {id: 'stephen_king', name: 'Stephen King Collection', icon: '📚', count: 24, category: 'special'},
-                    {id: 'horror_series', name: 'Horror TV Series', icon: '📺', count: 30, category: 'special'},
-                    {id: 'stephen_king', name: 'Stephen King Collection', icon: '📚', count: 67, category: 'special'},
-                    {id: 'horror_series', name: 'Horror TV Series', icon: '📺', count: 71, category: 'special'},
-                ],
-                categories: [
-                    {id: 'slasher', name: 'Slasher'},
-                    {id: 'supernatural', name: 'Supernatural'},
-                    {id: 'modern', name: 'Modern'},
-                    {id: 'genre', name: 'By Genre'},
-                    {id: 'special', name: 'Special'},
-                ],
-                selectedCatalogs: [],
-                showInstallPanel: false,
-                stremioUrl: '',
-                installUrl: '',
-                copied: false
-                copied: false,
-                appVersion: '13.2.3'
+            data() {
+                return {
+                    appVersion: '13.2.3',
+                    totalEntries: 460,
+                    filterCategory: null,
+                    selectedCatalogs: [],
+                    showInstallPanel: false,
+                    copied: false,
+
+                    categories: [
+                        { id: 'slasher',      name: 'Slasher' },
+                        { id: 'supernatural', name: 'Supernatural' },
+                        { id: 'modern',       name: 'Modern' },
+                        { id: 'genre',        name: 'By Genre' },
+                        { id: 'special',      name: 'Special' },
+                    ],
+
+                    catalogs: [
+                        // SLASHERS
+                        { id: 'halloween',      name: 'Halloween Saga',          icon: '🎃', count: 13, category: 'slasher' },
+                        { id: 'friday_13th',    name: 'Friday the 13th',         icon: '🔪', count: 12, category: 'slasher' },
+                        { id: 'nightmare',      name: 'Nightmare on Elm St',     icon: '💀', count: 9,  category: 'slasher' },
+                        { id: 'scream',         name: 'Scream Saga',             icon: '📞', count: 7,  category: 'slasher' },
+                        { id: 'chucky_saga',    name: 'Chucky Saga',             icon: '🔴', count: 8,  category: 'slasher' },
+                        { id: 'saw',            name: 'Saw Legacy',              icon: '🧩', count: 9,  category: 'slasher' },
+                        { id: 'texas_chainsaw', name: 'Texas Chainsaw',          icon: '🪚', count: 9,  category: 'slasher' },
+                        // SUPERNATURAL
+                        { id: 'conjuring_rel',  name: 'Conjuring (Release)',     icon: '👻', count: 9,  category: 'supernatural' },
+                        { id: 'conjuring_time', name: 'Conjuring (Timeline)',    icon: '⏳', count: 9,  category: 'supernatural' },
+                        { id: 'insidious',      name: 'Insidious Universe',      icon: '🚪', count: 5,  category: 'supernatural' },
+                        { id: 'paranormal',     name: 'Paranormal Activity',     icon: '📹', count: 7,  category: 'supernatural' },
+                        // MODERN
+                        { id: 'modern_horror',           name: 'Modern Horror Sagas',       icon: '🎬', count: 13, category: 'modern' },
+                        { id: 'final_dest',               name: 'Final Destination',         icon: '💀', count: 6,  category: 'modern' },
+                        { id: 'resident_evil',            name: 'Resident Evil',             icon: '🧟', count: 7,  category: 'modern' },
+                        { id: 'alien_predator_timeline',  name: 'Alien & Predator Timeline', icon: '👽', count: 14, category: 'modern' },
+                        { id: 'evil_dead',                name: 'Evil Dead Saga',            icon: '📖', count: 5,  category: 'modern' },
+                        { id: 'hellraiser',               name: 'Hellraiser',                icon: '📦', count: 11, category: 'modern' },
+                        { id: 'a24_horror',               name: 'A24 & Indie Horror',        icon: '🎨', count: 16, category: 'modern' },
+                        // GENRE
+                        { id: 'classics',      name: 'Horror Classics (60s-00s)', icon: '👑', count: 51, category: 'genre' },
+                        { id: 'psychological', name: 'Psychological Horror',      icon: '🧠', count: 28, category: 'genre' },
+                        { id: 'found_footage', name: 'Found Footage',             icon: '📼', count: 21, category: 'genre' },
+                        { id: 'zombies',       name: 'Zombie Films',              icon: '🧟‍♂️', count: 29, category: 'genre' },
+                        { id: 'asian_horror',  name: 'Asian Horror',              icon: '🎌', count: 26, category: 'genre' },
+                        // SPECIAL
+                        { id: 'stephen_king', name: 'Stephen King Collection', icon: '📚', count: 67, category: 'special' },
+                        { id: 'horror_series', name: 'Horror TV Series',        icon: '📺', count: 71, category: 'special' },
+                    ],
+                };
             },
+
             computed: {
-                allSelected() {
-                    return this.selectedCatalogs.length === this.catalogs.length;
-                },
-                totalCatalogs() {
-                    return this.catalogs.length;
-                },
-                totalEntriesLabel() {
-                    return `${this.totalEntries}+`;
-                },
-                totalEntries() {
-                    return this.catalogs.reduce((sum, c) => sum + c.count, 0);
-                },
-                totalFilms() {
+                totalCatalogs() { return this.catalogs.length; },
+                selectedEntries() {
                     return this.catalogs
-                        .filter(c => this.selectedCatalogs.includes(c.id))
+                        .filter((c) => this.selectedCatalogs.includes(c.id))
                         .reduce((sum, c) => sum + c.count, 0);
-                }
+                },
+                filteredCatalogs() {
+                    if (!this.filterCategory) return this.catalogs;
+                    return this.catalogs.filter((c) => c.category === this.filterCategory);
+                },
+                baseUrl() {
+                    return window.location.origin;
+                },
+                addonUrl() {
+                    if (this.selectedCatalogs.length === 0) return `${this.baseUrl}/manifest.json`;
+                    return `${this.baseUrl}/${this.selectedCatalogs.join(',')}/manifest.json`;
+                },
+                stremioWebUrl() {
+                    return `https://web.stremio.com/#/addons?addon=${encodeURIComponent(this.addonUrl)}`;
+                },
+                stremioAppUrl() {
+                    return `stremio://${this.addonUrl.replace(/^https?:\/\//, '')}`;
+                },
             },
-            mounted() {
+
             async mounted() {
                 await this.loadStats();
-                // Select all by default
-                this.selectByCategory('all');
+                this.selectAll();
             },
+
             methods: {
                 async loadStats() {
                     try {
-                        const response = await fetch('/catalog-stats.json');
-                        if (!response.ok) return;
-
-                        const stats = await response.json();
+                        const res = await fetch('/catalog-stats.json');
+                        if (!res.ok) return;
+                        const stats = await res.json();
                         if (stats.version) this.appVersion = stats.version;
+                        if (stats.totalEntries) this.totalEntries = stats.totalEntries;
+                        if (stats.catalogStats) {
+                            this.catalogs = this.catalogs.map((c) => ({
+                                ...c,
+                                count: stats.catalogStats[c.id] ?? c.count,
+                            }));
+                        }
+                    } catch (_) { /* fallback silencioso */ }
+                },
 
-                        const countById = stats.catalogStats || {};
-                        this.catalogs = this.catalogs.map((catalog) => ({
-                            ...catalog,
-                            count: countById[catalog.id] || catalog.count
-                        }));
-                    } catch (_) {
-                        // fallback silencioso para os valores estáticos
-                    }
+                toggleCatalog(id) {
+                    const idx = this.selectedCatalogs.indexOf(id);
+                    if (idx === -1) this.selectedCatalogs.push(id);
+                    else this.selectedCatalogs.splice(idx, 1);
                 },
-                toggleCatalog(catalog) {
-                    const index = this.selectedCatalogs.indexOf(catalog.id);
-                    if (index === -1) {
-                        this.selectedCatalogs.push(catalog.id);
-                    } else {
-                        this.selectedCatalogs.splice(index, 1);
-                    }
+
+                selectAll() {
+                    this.selectedCatalogs = this.catalogs.map((c) => c.id);
                 },
-                selectByCategory(categoryId) {
-                    if (categoryId === 'all') {
-                        this.selectedCatalogs = this.catalogs.map(c => c.id);
-                    } else {
-                        const catalogsInCategory = this.catalogs
-                            .filter(c => c.category === categoryId)
-                            .map(c => c.id);
-                        
-                        catalogsInCategory.forEach(id => {
-                            if (!this.selectedCatalogs.includes(id)) {
-                                this.selectedCatalogs.push(id);
-                            }
-                        });
-                    }
-                },
+
                 clearAll() {
                     this.selectedCatalogs = [];
+                },
 
+                async copyUrl() {
+                    try {
+                        await navigator.clipboard.writeText(this.addonUrl);
+                        this.copied = true;
+                        setTimeout(() => { this.copied = false; }, 2000);
+                    } catch (_) {}
+                },
+
+                categoryBadgeClass(cat) {
+                    const map = {
+                        slasher:      'border-red-900/50 text-red-700',
+                        supernatural: 'border-purple-900/50 text-purple-700',
+                        modern:       'border-orange-900/50 text-orange-700',
+                        genre:        'border-blue-900/50 text-blue-700',
+                        special:      'border-yellow-900/50 text-yellow-700',
+                    };
+                    return map[cat] || 'border-gray-700 text-gray-600';
+                },
+            },
+        });
+    </script>
+</body>
 </html>
