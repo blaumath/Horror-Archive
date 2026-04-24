@@ -3,10 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Configure your Horror Archive addon for Stremio - The Ultimate Horror Collection with 25+ specialized catalogs">
+    <meta name="keywords" content="stremio, horror, addon, movies, series, halloween, conjuring, stephen king">
+    <meta name="author" content="Horror Archive">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="🎬 Horror Archive — Configure Your Collection">
+    <meta property="og:description" content="The Ultimate Horror Collection for Stremio — 460+ curated entries across 25+ specialized catalogs">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Horror Archive">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#991b1b">
+    
     <title>🎬 Horror Archive — Configure Your Collection</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,19 +42,29 @@
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0px)' },
                             '50%':      { transform: 'translateY(-10px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(239,68,68,0.4)' },
+                            '50%':      { boxShadow: '0 0 40px rgba(239,68,68,0.8)' },
                         }
                     }
                 }
             }
         }
     </script>
+    
     <style>
         [v-cloak] { display: none; }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
             background-color: #000;
@@ -46,9 +74,10 @@
                 radial-gradient(circle at center, #1a0000 0%, #000 100%);
             min-height: 100vh;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
         }
 
-        /* Scanlines */
+        /* Scanlines effect */
         body::after {
             content: " ";
             display: block;
@@ -64,6 +93,7 @@
         .glassmorphic {
             background: rgba(10,0,0,0.85);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(153,27,27,0.3);
             box-shadow: 0 8px 32px rgba(153,27,27,0.15);
             border-radius: 20px;
@@ -118,7 +148,11 @@
             box-shadow: 0 6px 30px rgba(239,68,68,0.6);
             transform: translateY(-2px);
         }
-        .install-button:disabled { opacity: 0.3; cursor: not-allowed; }
+        .install-button:disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed; 
+            transform: none;
+        }
 
         .stats-box {
             background: linear-gradient(135deg, rgba(127,29,29,0.2) 0%, rgba(153,27,27,0.1) 100%);
@@ -133,11 +167,58 @@
             background: #0a0000;
             border: 1px solid rgba(153,27,27,0.4);
             border-radius: 8px;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             font-size: 12px;
             color: #ef4444;
             word-break: break-all;
             padding: 12px;
+            user-select: all;
+        }
+
+        .loading-spinner {
+            border: 2px solid rgba(239,68,68,0.2);
+            border-top: 2px solid #ef4444;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a0000;
+            color: #ef4444;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            border: 1px solid rgba(239,68,68,0.3);
+            z-index: 1000;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #991b1b;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -150,7 +231,8 @@
             <h1 class="text-6xl font-black tracking-tighter text-red-800 uppercase mb-2">Horror Archive</h1>
             <p class="text-xs text-gray-500 uppercase tracking-[0.4em] mb-1">The Ultimate Horror Collection for Stremio</p>
             <p class="text-[11px] text-red-500 font-mono">
-                v{{ appVersion }} &bull; {{ totalEntries }}+ Curated Entries &bull; {{ totalCatalogs }} Catalogs
+                <span v-if="loading">Loading stats...</span>
+                <span v-else>v{{ appVersion }} &bull; {{ totalEntries }}+ Curated Entries &bull; {{ totalCatalogs }} Catalogs</span>
             </p>
         </div>
 
@@ -203,8 +285,14 @@
                 </button>
             </div>
 
+            <!-- Loading state -->
+            <div v-if="loading" class="text-center py-12">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <p class="text-gray-600 text-xs uppercase tracking-wider">Loading catalogs...</p>
+            </div>
+
             <!-- Grid de catálogos -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
                 <button v-for="catalog in filteredCatalogs" :key="catalog.id"
                     @click="toggleCatalog(catalog.id)"
                     :class="['catalog-item rounded-xl p-4 text-left cursor-pointer', { selected: selectedCatalogs.includes(catalog.id) }]">
@@ -227,6 +315,11 @@
                 </button>
             </div>
 
+            <!-- Mensagem quando filtro não retorna resultados -->
+            <div v-if="!loading && filteredCatalogs.length === 0" class="text-center py-8">
+                <p class="text-gray-600 text-xs uppercase tracking-wider">No catalogs found in this category</p>
+            </div>
+
             <!-- Botão instalar -->
             <button @click="showInstallPanel = true" :disabled="selectedCatalogs.length === 0"
                 class="install-button w-full py-4 rounded-xl text-sm">
@@ -244,12 +337,12 @@
 
                 <div class="mb-6">
                     <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-2">Your Addon URL</p>
-                    <div class="url-box">{{ addonUrl }}</div>
+                    <div class="url-box" @click="copyUrl" title="Click to copy">{{ addonUrl }}</div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                     <!-- Abrir no Stremio Web -->
-                    <a :href="stremioWebUrl" target="_blank"
+                    <a :href="stremioWebUrl" target="_blank" rel="noopener"
                         class="install-button py-3 rounded-xl text-xs text-center block">
                         <i class="fas fa-globe mr-2"></i>Stremio Web
                     </a>
@@ -275,6 +368,17 @@
             </div>
         </transition>
 
+        <!-- Footer -->
+        <div class="text-center mt-8 text-[10px] text-gray-700">
+            <p>🎬 Horror Archive v{{ appVersion }} • Made with ❤️ for horror fans</p>
+            <p class="mt-1">
+                <a href="https://github.com/blaumath/Horror-Archive" target="_blank" rel="noopener" 
+                   class="text-red-800 hover:text-red-500 transition-colors">
+                    <i class="fab fa-github mr-1"></i>GitHub
+                </a>
+            </p>
+        </div>
+
     </div>
 
     <script>
@@ -284,6 +388,7 @@
                 return {
                     appVersion: '13.2.3',
                     totalEntries: 460,
+                    loading: true,
                     filterCategory: null,
                     selectedCatalogs: [],
                     showInstallPanel: false,
@@ -361,29 +466,41 @@
             async mounted() {
                 await this.loadStats();
                 this.selectAll();
+                this.loading = false;
             },
 
             methods: {
                 async loadStats() {
                     try {
                         const res = await fetch('/catalog-stats.json');
-                        if (!res.ok) return;
+                        if (!res.ok) {
+                            console.warn('Stats endpoint returned', res.status);
+                            return;
+                        }
                         const stats = await res.json();
+                        
                         if (stats.version) this.appVersion = stats.version;
                         if (stats.totalEntries) this.totalEntries = stats.totalEntries;
+                        
+                        // Atualiza contagens com dados reais do servidor
                         if (stats.catalogStats) {
                             this.catalogs = this.catalogs.map((c) => ({
                                 ...c,
                                 count: stats.catalogStats[c.id] ?? c.count,
                             }));
                         }
-                    } catch (_) { /* fallback silencioso */ }
+                    } catch (err) {
+                        console.warn('Could not load stats, using defaults:', err.message);
+                    }
                 },
 
                 toggleCatalog(id) {
                     const idx = this.selectedCatalogs.indexOf(id);
-                    if (idx === -1) this.selectedCatalogs.push(id);
-                    else this.selectedCatalogs.splice(idx, 1);
+                    if (idx === -1) {
+                        this.selectedCatalogs.push(id);
+                    } else {
+                        this.selectedCatalogs.splice(idx, 1);
+                    }
                 },
 
                 selectAll() {
@@ -399,7 +516,17 @@
                         await navigator.clipboard.writeText(this.addonUrl);
                         this.copied = true;
                         setTimeout(() => { this.copied = false; }, 2000);
-                    } catch (_) {}
+                    } catch (err) {
+                        // Fallback for older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = this.addonUrl;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        this.copied = true;
+                        setTimeout(() => { this.copied = false; }, 2000);
+                    }
                 },
 
                 categoryBadgeClass(cat) {

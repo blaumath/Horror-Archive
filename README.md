@@ -2,16 +2,15 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-13.0.0-red)
-![Version](https://img.shields.io/badge/version-13.2.3-red)
-![Catalogs](https://img.shields.io/badge/catalogs-25+-darkred)
-![Films](https://img.shields.io/badge/films-700+-crimson)
-![Films](https://img.shields.io/badge/entries-460+-crimson)
-![Status](https://img.shields.io/badge/status-production-green)
+![Version](https://img.shields.io/badge/version-13.2.3-red?style=for-the-badge)
+![Catalogs](https://img.shields.io/badge/catalogs-25-darkred?style=for-the-badge)
+![Entries](https://img.shields.io/badge/entries-460+-crimson?style=for-the-badge)
+![Node](https://img.shields.io/badge/node-20.x-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-production-brightgreen?style=for-the-badge)
 
 **The most complete horror collection addon for Stremio**
 
-[🚀 Install Now](#installation) • [📚 Catalogs](#catalogs) • [⚙️ Features](#features) • [🐛 Report Bug](https://github.com/blaumath/Horror-Archive/issues)
+[🚀 Install Now](#-installation) • [📚 Catalogs](#-catalogs) • [⚙️ Features](#-features) • [📝 Changelog](CHANGELOG.md) • [🐛 Report Bug](https://github.com/blaumath/Horror-Archive/issues)
 
 </div>
 
@@ -28,6 +27,15 @@ Copy and paste the manifest link directly into Stremio search bar:
 ```
 https://horror-archive.vercel.app/manifest.json
 ```
+
+
+### 🖥️ Option 3: Local Development
+```bash
+git clone https://github.com/blaumath/Horror-Archive.git
+cd Horror-Archive
+npm install
+npm start
+# Open http://localhost:7000/configure
 
 ---
 
@@ -72,18 +80,28 @@ https://horror-archive.vercel.app/manifest.json
 ## 🚀 Features
 
 ### ✨ Core Features
-- ✅ **700+ Horror Films & Series** carefully curated
-- ✅ **460+ Curated Horror Entries** carefully curated
-- ✅ **25+ Specialized Catalogs** organized by franchise, genre, and style
-- ✅ **Chronological & Timeline Options** (e.g., Conjuring Universe)
-- ✅ **High-Quality Metadata** from TMDB (Portuguese & English)
-- ✅ **IMDb-first Metadata Flow** compatible with Cinemeta and scraper addons
-- ✅ **Verified IMDb IDs** - guaranteed correct streams
-- ✅ **Smart Caching** - blazing fast performance
-- ✅ **Gzip Compression** - optimized bandwidth usage
-- ✅ **Works with Torrentio** - compatible with all major stream providers
+✨ Core Features
 
-### 🎯 New in v13.0
+    ✅ 460+ Curated Horror Entries across films and series
+
+    ✅ 25 Specialized Catalogs organized by franchise, genre, and style
+
+    ✅ Chronological & Timeline Options (e.g., Conjuring Universe, Alien & Predator)
+
+    ✅ Dynamic Configuration — Select only the catalogs you want
+
+    ✅ IMDb-first Metadata Flow — Compatible with Cinemeta and all major scraper addons
+
+    ✅ Verified IMDb IDs — Guaranteed correct streams
+
+    ✅ Smart Caching — Optimized performance with appropriate cache headers
+
+    ✅ Gzip Compression — Reduced bandwidth usage
+
+    ✅ Works with Torrentio — Compatible with all major stream providers
+
+    ✅ Zero External API Calls — All data is pre-curated and embedded
+
 ### 🎯 New in v13.2.3
 - 🛠️ Restored Stremio compatibility with standard `movie`/`series` catalog typing
 - 🛠️ Added native `/meta/:type/:id.json` support (+ configured-prefix variant)

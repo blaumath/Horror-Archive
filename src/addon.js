@@ -186,51 +186,72 @@ const totalEntries = Object.values(catalogStats).reduce((sum, n) => sum + n, 0);
 
 // Manifest (com ou sem configuração no prefixo)
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Content-Type', 'application/json');
-    res.json(buildManifest(req.params.configuration));
+    try {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Content-Type', 'application/json');
+        res.json(buildManifest(req.params.configuration));
+    } catch (error) {
+        console.error('Manifest error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
-// Catálogos (com ou sem configuração no prefixo)
+// Catálogos (com ou sem configuração no prefixo) - CORRIGIDO
 app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (req, res) => {
-    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
-    res.setHeader('Content-Type', 'application/json');
+    try {
+        res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
+        res.setHeader('Content-Type', 'application/json');
 
-    const catalogType = catalogTypeById[req.params.id];
-    if (!catalogType || req.params.type !== catalogType) {
-        return res.json({ metas: [] });
+        const catalogType = catalogTypeById[req.params.id];
+        if (!catalogType || req.params.type !== catalogType) {
+            return res.json({ metas: [] });
+        }
+
+        const skip = parseSkip(req.query.skip);
+        const metas = metasByCatalogId[req.params.id].slice(skip, skip + CATALOG_PAGE_SIZE);
+        return res.json({ metas });
+    } catch (error) {
+        console.error('Catalog error:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-
-  const catalogType = catalogTypeById[req.params.id];
-  if (!catalogType || req.params.type !== catalogType) {
-    return res.json({ metas: [] });
-  }
-
-  const skip = parseSkip(req.query.skip);
-  const metas = metasByCatalogId[req.params.id].slice(skip, skip + CATALOG_PAGE_SIZE);
-  return res.json({ metas });
 });
 
 // Meta (com ou sem configuração no prefixo)
 app.get(['/meta/:type/:id.json', '/:configuration/meta/:type/:id.json'], (req, res) => {
-  res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
+    try {
+        res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
 
-    const meta = metaById[req.params.id];
-    if (!meta || req.params.type !== meta.type) {
-        return res.status(404).json({ meta: null });
+        const meta = metaById[req.params.id];
+        if (!meta || req.params.type !== meta.type) {
+            return res.status(404).json({ meta: null });
+        }
+        return res.json({ meta });
+    } catch (error) {
+        console.error('Meta error:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-    return res.json({ meta });
 });
 
 // Stats para a página de configuração
 app.get('/catalog-stats.json', (_req, res) => {
-    res.setHeader('Cache-Control', 'max-age=300, stale-while-revalidate=3600');
-    res.setHeader('Content-Type', 'application/json');
-    res.json({ version: baseManifest.version, totalCatalogs, totalEntries, catalogStats });
+    try {
+        res.setHeader('Cache-Control', 'max-age=300, stale-while-revalidate=3600');
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ 
+            version: baseManifest.version, 
+            totalCatalogs, 
+            totalEntries, 
+            catalogStats 
+        });
+    } catch (error) {
+        console.error('Stats error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // Página de configuração
 app.get('/configure', (_req, res) => {
+    res.setHeader('Cache-Control', 'public, max-age=3600');
     res.setHeader('Content-Type', 'text/html');
     res.sendFile(path.join(__dirname, 'public', 'configure.html'));
 });
@@ -239,7 +260,27 @@ app.get('/', (_req, res) => res.redirect('/configure'));
 
 // Health check
 app.get('/health', (_req, res) => {
-    res.json({ status: 'OK', version: baseManifest.version, catalogs: totalCatalogs, entries: totalEntries });
+    try {
+        res.json({ 
+            status: 'OK', 
+            version: baseManifest.version, 
+            catalogs: totalCatalogs, 
+            entries: totalEntries 
+        });
+    } catch (error) {
+        res.status(500).json({ status: 'ERROR', error: error.message });
+    }
 });
 
+// Para Vercel serverless
 module.exports = app;
+
+// Para desenvolvimento local
+if (require.main === module) {
+    const PORT = process.env.PORT || 7000;
+    app.listen(PORT, () => {
+        console.log(`🎬 Horror Archive running at http://localhost:${PORT}`);
+        console.log(`📋 Manifest: http://localhost:${PORT}/manifest.json`);
+        console.log(`⚙️  Configure: http://localhost:${PORT}/configure`);
+    });
+}
