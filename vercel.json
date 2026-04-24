@@ -16,6 +16,10 @@
       "dest": "src/addon.js"
     },
     {
+      "src": "/",
+      "dest": "src/addon.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "src/addon.js"
     }
@@ -23,6 +27,32 @@
   "headers": [
     {
       "source": "/manifest.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)/manifest.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/configure",
       "headers": [
         {
           "key": "Cache-Control",
