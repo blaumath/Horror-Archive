@@ -122,16 +122,6 @@ const metaById = Object.values(catalogsData).reduce((acc, catalog) => {
   return acc;
 }, {});
 
-const catalogIdsByMetaId = Object.entries(catalogsData).reduce((acc, [catalogId, catalog]) => {
-  catalog.data.forEach((item) => {
-    if (!acc[item.imdbId]) {
-      acc[item.imdbId] = new Set();
-    }
-    acc[item.imdbId].add(catalogId);
-  });
-  return acc;
-}, {});
-
 /** Retorna array de IDs de catálogos válidos a partir de uma string de configuração. */
 const parseSelectedCatalogs = (configuration = '') => {
     if (!configuration || typeof configuration !== 'string') return null;
@@ -255,7 +245,7 @@ app.get('/catalog-stats.json', (_req, res) => {
 
 // Página de configuração
 app.get('/configure', (_req, res) => {
-    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Content-Type', 'text/html');
     res.sendFile(path.join(__dirname, 'public', 'configure.html'));
 });
