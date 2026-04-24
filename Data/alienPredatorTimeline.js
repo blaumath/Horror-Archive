@@ -11,8 +11,9 @@ module.exports = [
   // --- ALIEN ERA ---
   { "title": "Prometheus", "imdbId": "tt1446714", "year": "2012" }, // Set in 2093
   { "title": "Alien: Covenant", "imdbId": "tt2316204", "year": "2017" }, // Set in 2104
+  { "title": "Alien: Earth (TV Series)", "imdbId": "tt13623632", "year": "2025", "type": "series" }, // Set in 2120 [citation:8]
   { "title": "Alien", "imdbId": "tt0078748", "year": "1979" }, // Set in 2122
-  { "title": "Alien: Romulus", "imdbId": "tt18412256", "year": "2024" }, // Set between Alien and Aliens
+  { "title": "Alien: Romulus", "imdbId": "tt18412256", "year": "2024" }, // Set between Alien and Aliens (2142)
   { "title": "Aliens", "imdbId": "tt0090605", "year": "1986" },
   { "title": "Alien 3", "imdbId": "tt0103644", "year": "1992" },
   { "title": "Alien: Resurrection", "imdbId": "tt0118583", "year": "1997" }

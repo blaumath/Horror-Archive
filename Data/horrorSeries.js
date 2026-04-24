@@ -85,6 +85,6 @@ module.exports = [
   { "title": "Channel Zero", "imdbId": "tt4820370", "year": "2016", "type": "series" },
   { "title": "Dead Set", "imdbId": "tt1285482", "year": "2008", "type": "series" },
   { "title": "Les Revenants (The Returned)", "imdbId": "tt2521668", "year": "2012", "type": "series" },
-  { "title": "The Last of Us", "imdbId": "tt3581920", "year": "2023", "type": "series" },
+  { "title": "The Last of Us", "imdbId": "tt12708542", "year": "2023", "type": "series" },
 ];
 

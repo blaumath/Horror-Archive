@@ -8,9 +8,6 @@ module.exports = [
   { "title": "One Missed Call", "imdbId": "tt0366292", "year": "2003" },
   { "title": "Noroi: The Curse", "imdbId": "tt0930083", "year": "2005" },
   { "title": "Marebito", "imdbId": "tt0434179", "year": "2004" },
-  { "title": "The Grudge", "imdbId": "tt0391198", "year": "2004" },
-  { "title": "The Ring", "imdbId": "tt0298130", "year": "2002" },
-  { "title": "Paranormal Activity 2: Tokyo Night", "imdbId": "tt1728179", "year": "2010" },
   
   // --- K-HORROR (KOREAN HORROR) ---
   { "title": "A Tale of Two Sisters", "imdbId": "tt0365376", "year": "2003" },

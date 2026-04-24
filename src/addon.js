@@ -135,6 +135,10 @@ const catalogIdsByMetaId = Object.entries(catalogsData).reduce((acc, [catalogId,
 /** Retorna array de IDs de catálogos válidos a partir de uma string de configuração. */
 const parseSelectedCatalogs = (configuration = '') => {
     if (!configuration || typeof configuration !== 'string') return null;
+    
+    // Token especial "all" = todos os catálogos (URL curta)
+    if (configuration === 'all') return Object.keys(catalogsData);
+    
     const selected = configuration
         .split(',')
         .map((id) => id.trim())
@@ -196,7 +200,7 @@ app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     }
 });
 
-// Catálogos (com ou sem configuração no prefixo) - CORRIGIDO
+// Catálogos (com ou sem configuração no prefixo)
 app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (req, res) => {
     try {
         res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
@@ -282,5 +286,6 @@ if (require.main === module) {
         console.log(`🎬 Horror Archive running at http://localhost:${PORT}`);
         console.log(`📋 Manifest: http://localhost:${PORT}/manifest.json`);
         console.log(`⚙️  Configure: http://localhost:${PORT}/configure`);
+        console.log(`🔗 Short URL: http://localhost:${PORT}/all/manifest.json`);
     });
 }

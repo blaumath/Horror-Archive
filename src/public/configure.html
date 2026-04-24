@@ -5,24 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Configure your Horror Archive addon for Stremio - The Ultimate Horror Collection with 25+ specialized catalogs">
-    <meta name="keywords" content="stremio, horror, addon, movies, series, halloween, conjuring, stephen king">
-    <meta name="author" content="Horror Archive">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="🎬 Horror Archive — Configure Your Collection">
-    <meta property="og:description" content="The Ultimate Horror Collection for Stremio — 460+ curated entries across 25+ specialized catalogs">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Horror Archive">
-    
-    <!-- Theme Color -->
+    <meta name="description" content="Configure your Horror Archive addon for Stremio - The Ultimate Horror Collection with 25 specialized catalogs">
     <meta name="theme-color" content="#991b1b">
     
     <title>🎬 Horror Archive — Configure Your Collection</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js">
+    </script>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -32,26 +23,21 @@
                 extend: {
                     colors: {
                         horror: {
-                            blood:  '#991b1b',
-                            dark:   '#050505',
-                            card:   'rgba(15,0,0,0.9)',
+                            blood: '#991b1b',
+                            dark: '#050505',
+                            card: 'rgba(15,0,0,0.9)',
                             button: '#7f1d1d',
-                            text:   '#d1d5db',
+                            text: '#d1d5db',
                             accent: '#ef4444'
                         }
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%':      { transform: 'translateY(-10px)' },
-                        },
-                        pulseGlow: {
-                            '0%, 100%': { boxShadow: '0 0 20px rgba(239,68,68,0.4)' },
-                            '50%':      { boxShadow: '0 0 40px rgba(239,68,68,0.8)' },
+                            '50%': { transform: 'translateY(-10px)' },
                         }
                     }
                 }
@@ -61,11 +47,9 @@
     
     <style>
         [v-cloak] { display: none; }
-
-        * {
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        
+        * { -webkit-tap-highlight-color: transparent; }
+        
         body {
             background-color: #000;
             background-image:
@@ -76,8 +60,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             overflow-x: hidden;
         }
-
-        /* Scanlines effect */
+        
         body::after {
             content: " ";
             display: block;
@@ -89,7 +72,7 @@
             pointer-events: none;
             opacity: 0.15;
         }
-
+        
         .glassmorphic {
             background: rgba(10,0,0,0.85);
             backdrop-filter: blur(20px);
@@ -98,7 +81,7 @@
             box-shadow: 0 8px 32px rgba(153,27,27,0.15);
             border-radius: 20px;
         }
-
+        
         .catalog-item {
             background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 100%);
             border: 1.5px solid rgba(153,27,27,0.2);
@@ -107,7 +90,7 @@
             position: relative;
             overflow: hidden;
         }
-
+        
         .catalog-item::before {
             content: '';
             position: absolute;
@@ -116,16 +99,16 @@
             background: linear-gradient(90deg, transparent, rgba(239,68,68,0.1), transparent);
             transition: left 0.5s;
         }
-
+        
         .catalog-item:hover::before { left: 100%; }
-
+        
         .catalog-item:hover {
             border-color: #991b1b;
             color: #ef4444;
             transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(153,27,27,0.3);
         }
-
+        
         .catalog-item.selected {
             background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
             color: #fff;
@@ -133,7 +116,7 @@
             box-shadow: 0 0 20px rgba(239,68,68,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
             transform: translateY(-2px);
         }
-
+        
         .install-button {
             background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
             color: #fff;
@@ -153,16 +136,16 @@
             cursor: not-allowed; 
             transform: none;
         }
-
+        
         .stats-box {
             background: linear-gradient(135deg, rgba(127,29,29,0.2) 0%, rgba(153,27,27,0.1) 100%);
             border: 1px solid rgba(239,68,68,0.2);
             border-radius: 10px;
         }
-
+        
         .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
         .fade-enter, .fade-leave-to { opacity: 0; }
-
+        
         .url-box {
             background: #0a0000;
             border: 1px solid rgba(153,27,27,0.4);
@@ -173,53 +156,26 @@
             word-break: break-all;
             padding: 12px;
             user-select: all;
-        }
-
-        .loading-spinner {
-            border: 2px solid rgba(239,68,68,0.2);
-            border-top: 2px solid #ef4444;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Tooltip */
-        .tooltip {
             position: relative;
         }
-        .tooltip:hover::after {
-            content: attr(data-tooltip);
+        
+        .url-badge {
             position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a0000;
-            color: #ef4444;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            white-space: nowrap;
-            border: 1px solid rgba(239,68,68,0.3);
-            z-index: 1000;
+            top: -8px;
+            right: 12px;
+            background: #22c55e;
+            color: #000;
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0000;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #991b1b;
-            border-radius: 3px;
-        }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0000; }
+        ::-webkit-scrollbar-thumb { background: #991b1b; border-radius: 3px; }
     </style>
 </head>
 <body class="text-gray-300 py-6 px-4">
@@ -231,8 +187,7 @@
             <h1 class="text-6xl font-black tracking-tighter text-red-800 uppercase mb-2">Horror Archive</h1>
             <p class="text-xs text-gray-500 uppercase tracking-[0.4em] mb-1">The Ultimate Horror Collection for Stremio</p>
             <p class="text-[11px] text-red-500 font-mono">
-                <span v-if="loading">Loading stats...</span>
-                <span v-else>v{{ appVersion }} &bull; {{ totalEntries }}+ Curated Entries &bull; {{ totalCatalogs }} Catalogs</span>
+                v{{ appVersion }} &bull; {{ totalEntries }}+ Curated Entries &bull; {{ totalCatalogs }} Catalogs
             </p>
         </div>
 
@@ -285,14 +240,8 @@
                 </button>
             </div>
 
-            <!-- Loading state -->
-            <div v-if="loading" class="text-center py-12">
-                <div class="loading-spinner mx-auto mb-4"></div>
-                <p class="text-gray-600 text-xs uppercase tracking-wider">Loading catalogs...</p>
-            </div>
-
             <!-- Grid de catálogos -->
-            <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
                 <button v-for="catalog in filteredCatalogs" :key="catalog.id"
                     @click="toggleCatalog(catalog.id)"
                     :class="['catalog-item rounded-xl p-4 text-left cursor-pointer', { selected: selectedCatalogs.includes(catalog.id) }]">
@@ -315,11 +264,6 @@
                 </button>
             </div>
 
-            <!-- Mensagem quando filtro não retorna resultados -->
-            <div v-if="!loading && filteredCatalogs.length === 0" class="text-center py-8">
-                <p class="text-gray-600 text-xs uppercase tracking-wider">No catalogs found in this category</p>
-            </div>
-
             <!-- Botão instalar -->
             <button @click="showInstallPanel = true" :disabled="selectedCatalogs.length === 0"
                 class="install-button w-full py-4 rounded-xl text-sm">
@@ -337,21 +281,25 @@
 
                 <div class="mb-6">
                     <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-2">Your Addon URL</p>
-                    <div class="url-box" @click="copyUrl" title="Click to copy">{{ addonUrl }}</div>
+                    <div class="url-box" @click="copyUrl" title="Click to copy">
+                        <span v-if="isAllSelected" class="url-badge">SHORT URL</span>
+                        {{ addonUrl }}
+                    </div>
+                    <p v-if="isAllSelected" class="text-[9px] text-green-600 mt-2 text-center">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        All catalogs selected! Using optimized short URL.
+                    </p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                    <!-- Abrir no Stremio Web -->
                     <a :href="stremioWebUrl" target="_blank" rel="noopener"
                         class="install-button py-3 rounded-xl text-xs text-center block">
                         <i class="fas fa-globe mr-2"></i>Stremio Web
                     </a>
-                    <!-- Abrir no Stremio App -->
                     <a :href="stremioAppUrl"
                         class="install-button py-3 rounded-xl text-xs text-center block">
                         <i class="fas fa-desktop mr-2"></i>Stremio App
                     </a>
-                    <!-- Copiar URL -->
                     <button @click="copyUrl"
                         class="install-button py-3 rounded-xl text-xs">
                         <i :class="copied ? 'fas fa-check' : 'fas fa-copy'" class="mr-2"></i>
@@ -388,7 +336,6 @@
                 return {
                     appVersion: '13.2.3',
                     totalEntries: 460,
-                    loading: true,
                     filterCategory: null,
                     selectedCatalogs: [],
                     showInstallPanel: false,
@@ -439,25 +386,42 @@
 
             computed: {
                 totalCatalogs() { return this.catalogs.length; },
+                
+                // Verifica se TODOS os catálogos estão selecionados
+                isAllSelected() {
+                    return this.selectedCatalogs.length === this.catalogs.length;
+                },
+                
                 selectedEntries() {
                     return this.catalogs
                         .filter((c) => this.selectedCatalogs.includes(c.id))
                         .reduce((sum, c) => sum + c.count, 0);
                 },
+                
                 filteredCatalogs() {
                     if (!this.filterCategory) return this.catalogs;
                     return this.catalogs.filter((c) => c.category === this.filterCategory);
                 },
+                
                 baseUrl() {
                     return window.location.origin;
                 },
+                
                 addonUrl() {
                     if (this.selectedCatalogs.length === 0) return `${this.baseUrl}/manifest.json`;
+                    
+                    // URL CURTA quando todos estão selecionados
+                    if (this.isAllSelected) {
+                        return `${this.baseUrl}/all/manifest.json`;
+                    }
+                    
                     return `${this.baseUrl}/${this.selectedCatalogs.join(',')}/manifest.json`;
                 },
+                
                 stremioWebUrl() {
                     return `https://web.stremio.com/#/addons?addon=${encodeURIComponent(this.addonUrl)}`;
                 },
+                
                 stremioAppUrl() {
                     return `stremio://${this.addonUrl.replace(/^https?:\/\//, '')}`;
                 },
@@ -466,41 +430,29 @@
             async mounted() {
                 await this.loadStats();
                 this.selectAll();
-                this.loading = false;
             },
 
             methods: {
                 async loadStats() {
                     try {
                         const res = await fetch('/catalog-stats.json');
-                        if (!res.ok) {
-                            console.warn('Stats endpoint returned', res.status);
-                            return;
-                        }
+                        if (!res.ok) return;
                         const stats = await res.json();
-                        
                         if (stats.version) this.appVersion = stats.version;
                         if (stats.totalEntries) this.totalEntries = stats.totalEntries;
-                        
-                        // Atualiza contagens com dados reais do servidor
                         if (stats.catalogStats) {
                             this.catalogs = this.catalogs.map((c) => ({
                                 ...c,
                                 count: stats.catalogStats[c.id] ?? c.count,
                             }));
                         }
-                    } catch (err) {
-                        console.warn('Could not load stats, using defaults:', err.message);
-                    }
+                    } catch (_) { /* fallback silencioso */ }
                 },
 
                 toggleCatalog(id) {
                     const idx = this.selectedCatalogs.indexOf(id);
-                    if (idx === -1) {
-                        this.selectedCatalogs.push(id);
-                    } else {
-                        this.selectedCatalogs.splice(idx, 1);
-                    }
+                    if (idx === -1) this.selectedCatalogs.push(id);
+                    else this.selectedCatalogs.splice(idx, 1);
                 },
 
                 selectAll() {
@@ -516,8 +468,8 @@
                         await navigator.clipboard.writeText(this.addonUrl);
                         this.copied = true;
                         setTimeout(() => { this.copied = false; }, 2000);
-                    } catch (err) {
-                        // Fallback for older browsers
+                    } catch (_) {
+                        // Fallback para navegadores antigos
                         const textArea = document.createElement('textarea');
                         textArea.value = this.addonUrl;
                         document.body.appendChild(textArea);
