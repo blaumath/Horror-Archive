@@ -81,7 +81,7 @@ const detectCatalogType = (items = []) =>
     items.length > 0 && items.every((item) => item.type === 'series') ? 'series' : 'movie';
 
 const catalogTypeById = Object.fromEntries(
-    Object.entries(catalogsData).map(([id, entry]) => [id, detectCatalogType(entry.data)])
+  Object.entries(catalogsData).map(([id, entry]) => [id, detectCatalogType(entry.data)])
 );
 
 const buildCatalogEntry = (id) => ({
@@ -113,13 +113,23 @@ const metasByCatalogId = Object.fromEntries(
 
 // Índice global de meta por IMDb ID (primeira ocorrência vence)
 const metaById = Object.values(catalogsData).reduce((acc, catalog) => {
-    const fallbackType = detectCatalogType(catalog.data);
-    catalog.data.forEach((item) => {
-        if (!acc[item.imdbId]) {
-            acc[item.imdbId] = buildMeta(item, fallbackType);
-        }
-    });
-    return acc;
+  const fallbackType = detectCatalogType(catalog.data);
+  catalog.data.forEach((item) => {
+    if (!acc[item.imdbId]) {
+      acc[item.imdbId] = buildMeta(item, fallbackType);
+    }
+  });
+  return acc;
+}, {});
+
+const catalogIdsByMetaId = Object.entries(catalogsData).reduce((acc, [catalogId, catalog]) => {
+  catalog.data.forEach((item) => {
+    if (!acc[item.imdbId]) {
+      acc[item.imdbId] = new Set();
+    }
+    acc[item.imdbId].add(catalogId);
+  });
+  return acc;
 }, {});
 
 /** Retorna array de IDs de catálogos válidos a partir de uma string de configuração. */
@@ -167,7 +177,7 @@ const buildManifest = (configuration) => {
 
 // ─── STATS ────────────────────────────────────────────────────────────────────
 const catalogStats = Object.fromEntries(
-    Object.entries(catalogsData).map(([id, entry]) => [id, entry.data.length])
+  Object.entries(catalogsData).map(([id, entry]) => [id, entry.data.length])
 );
 const totalCatalogs = Object.keys(catalogsData).length;
 const totalEntries = Object.values(catalogStats).reduce((sum, n) => sum + n, 0);
@@ -191,15 +201,19 @@ app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (
         return res.json({ metas: [] });
     }
 
-    const skip = parseSkip(req.query.skip);
-    const metas = metasByCatalogId[req.params.id].slice(skip, skip + CATALOG_PAGE_SIZE);
-    return res.json({ metas });
+  const catalogType = catalogTypeById[req.params.id];
+  if (!catalogType || req.params.type !== catalogType) {
+    return res.json({ metas: [] });
+  }
+
+  const skip = parseSkip(req.query.skip);
+  const metas = metasByCatalogId[req.params.id].slice(skip, skip + CATALOG_PAGE_SIZE);
+  return res.json({ metas });
 });
 
 // Meta (com ou sem configuração no prefixo)
 app.get(['/meta/:type/:id.json', '/:configuration/meta/:type/:id.json'], (req, res) => {
-    res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
-    res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
 
     const meta = metaById[req.params.id];
     if (!meta || req.params.type !== meta.type) {

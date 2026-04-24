@@ -36,12 +36,21 @@ const server = app.listen(0, async () => {
             throw new Error('wrong type catalog should return empty metas');
         }
 
+        const filteredOutCatalogRes = await request('/scream/catalog/movie/halloween.json');
+        const filteredOutCatalog = JSON.parse(filteredOutCatalogRes.body);
+        if (!Array.isArray(filteredOutCatalog.metas) || filteredOutCatalog.metas.length !== 0) {
+            throw new Error('filtered configuration should block non-selected catalog');
+        }
+
         const firstMeta = screamCatalog.metas[0];
         const metaRes = await request(`/meta/${firstMeta.type}/${firstMeta.id}.json`);
         if (metaRes.status !== 200) throw new Error('meta status != 200');
 
         const prefixedMetaRes = await request(`/scream/meta/${firstMeta.type}/${firstMeta.id}.json`);
         if (prefixedMetaRes.status !== 200) throw new Error('prefixed meta status != 200');
+
+        const blockedMetaRes = await request('/halloween/meta/movie/tt0117571.json');
+        if (blockedMetaRes.status !== 404) throw new Error('blocked meta should return 404');
 
         const statsRes = await request('/catalog-stats.json');
         if (statsRes.status !== 200) throw new Error('catalog-stats status != 200');
