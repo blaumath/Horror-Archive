@@ -4,16 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- SEO Meta Tags -->
     <meta name="description" content="Configure your Horror Archive addon for Stremio - The Ultimate Horror Collection with 25 specialized catalogs">
     <meta name="theme-color" content="#991b1b">
     
     <title>🎬 Horror Archive — Configure Your Collection</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js">
-    </script>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -47,7 +44,6 @@
     
     <style>
         [v-cloak] { display: none; }
-        
         * { -webkit-tap-highlight-color: transparent; }
         
         body {
@@ -181,7 +177,6 @@
 <body class="text-gray-300 py-6 px-4">
     <div id="app" v-cloak class="max-w-5xl mx-auto">
 
-        <!-- Header -->
         <div class="text-center mb-8">
             <span class="text-5xl animate-float block mb-4">🎬</span>
             <h1 class="text-6xl font-black tracking-tighter text-red-800 uppercase mb-2">Horror Archive</h1>
@@ -191,7 +186,6 @@
             </p>
         </div>
 
-        <!-- Stats rápidas -->
         <div class="grid grid-cols-3 gap-4 mb-8 max-w-2xl mx-auto">
             <div class="stats-box p-4 text-center">
                 <div class="text-3xl font-black text-red-500 mb-1">{{ selectedCatalogs.length }}</div>
@@ -207,10 +201,8 @@
             </div>
         </div>
 
-        <!-- Painel principal -->
         <div class="glassmorphic p-8 mb-6">
 
-            <!-- Controles -->
             <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-red-900/30 gap-4">
                 <div>
                     <h2 class="text-sm uppercase tracking-widest text-red-500 font-bold mb-1">Configure Your Collection</h2>
@@ -228,7 +220,6 @@
                 </div>
             </div>
 
-            <!-- Filtros por categoria -->
             <div class="flex flex-wrap gap-2 mb-6">
                 <button v-for="cat in categories" :key="cat.id"
                     @click="filterCategory = filterCategory === cat.id ? null : cat.id"
@@ -240,7 +231,6 @@
                 </button>
             </div>
 
-            <!-- Grid de catálogos -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
                 <button v-for="catalog in filteredCatalogs" :key="catalog.id"
                     @click="toggleCatalog(catalog.id)"
@@ -264,7 +254,6 @@
                 </button>
             </div>
 
-            <!-- Botão instalar -->
             <button @click="showInstallPanel = true" :disabled="selectedCatalogs.length === 0"
                 class="install-button w-full py-4 rounded-xl text-sm">
                 <i class="fas fa-download mr-2"></i>
@@ -272,7 +261,6 @@
             </button>
         </div>
 
-        <!-- Painel de instalação -->
         <transition name="fade">
             <div v-if="showInstallPanel" class="glassmorphic p-8 mb-6">
                 <h2 class="text-sm uppercase tracking-widest text-red-500 font-bold mb-6 text-center">
@@ -316,7 +304,6 @@
             </div>
         </transition>
 
-        <!-- Footer -->
         <div class="text-center mt-8 text-[10px] text-gray-700">
             <p>🎬 Horror Archive v{{ appVersion }} • Made with ❤️ for horror fans</p>
             <p class="mt-1">
@@ -444,7 +431,7 @@
                                 count: stats.catalogStats[c.id] ?? c.count,
                             }));
                         }
-                    } catch (_) { /* fallback silencioso */ }
+                    } catch (_) {}
                 },
 
                 toggleCatalog(id) {
