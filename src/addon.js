@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -5,109 +7,78 @@ const compression = require('compression');
 
 const app = express();
 app.use(cors());
-app.use(compression()); // COMPRESSÃO GZIP/BROTLI
 app.use(compression());
 
-// --- IMPORTAR TODOS OS CATÁLOGOS ---
-// --- IMPORTAR CATÁLOGOS ---
-const chuckyRelease = require('../Data/chuckyRelease');
-const conjuringRelease = require('../Data/conjuringRelease');
-const conjuringTimeline = require('../Data/conjuringTimeline');
-const fridayRelease = require('../Data/fridayRelease');
-const halloweenRelease = require('../Data/halloweenRelease');
-const horrorSeries = require('../Data/horrorSeries');
-const modernSagas = require('../Data/modernSagas');
-const nightmareRelease = require('../Data/nightmareRelease');
-const sawTimeline = require('../Data/sawTimeline');
-const screamData = require('../Data/screamData');
+// ─── CATÁLOGOS ────────────────────────────────────────────────────────────────
+const chuckyRelease         = require('../Data/chuckyRelease');
+const conjuringRelease      = require('../Data/conjuringRelease');
+const conjuringTimeline     = require('../Data/conjuringTimeline');
+const fridayRelease         = require('../Data/fridayRelease');
+const halloweenRelease      = require('../Data/halloweenRelease');
+const horrorSeries          = require('../Data/horrorSeries');
+const modernSagas           = require('../Data/modernSagas');
+const nightmareRelease      = require('../Data/nightmareRelease');
+const sawTimeline           = require('../Data/sawTimeline');
+const screamData            = require('../Data/screamData');
 const stephenKingCollection = require('../Data/stephenKingCollection');
-
-// --- NOVOS CATÁLOGOS ---
-const evilDeadSaga = require('../Data/evilDeadSaga');
-const insidiousSaga = require('../Data/insidiousSaga');
-const paranormalActivity = require('../Data/paranormalActivity');
-const texasChainsawSaga = require('../Data/texasChainsawSaga');
-const hellraiserSaga = require('../Data/hellraiserSaga');
-const finalDestination = require('../Data/finalDestination');
-const residentEvilSaga = require('../Data/residentEvilSaga');
+const evilDeadSaga          = require('../Data/evilDeadSaga');
+const insidiousSaga         = require('../Data/insidiousSaga');
+const paranormalActivity    = require('../Data/paranormalActivity');
+const texasChainsawSaga     = require('../Data/texasChainsawSaga');
+const hellraiserSaga        = require('../Data/hellraiserSaga');
+const finalDestination      = require('../Data/finalDestination');
+const residentEvilSaga      = require('../Data/residentEvilSaga');
 const alienPredatorTimeline = require('../Data/alienPredatorTimeline');
-const a24Horror = require('../Data/a24Horror');
-const foundFootageHorror = require('../Data/foundFootageHorror');
-const horrorClassics = require('../Data/horrorClassics');
-const psychologicalHorror = require('../Data/psychologicalHorror');
-const zombieHorror = require('../Data/zombieHorror');
-const asianHorror = require('../Data/asianHorror');
+const a24Horror             = require('../Data/a24Horror');
+const foundFootageHorror    = require('../Data/foundFootageHorror');
+const horrorClassics        = require('../Data/horrorClassics');
+const psychologicalHorror   = require('../Data/psychologicalHorror');
+const zombieHorror          = require('../Data/zombieHorror');
+const asianHorror           = require('../Data/asianHorror');
 
-// --- CONFIGURAÇÃO DE CATÁLOGOS ---
+// ─── MAPA DE CATÁLOGOS ────────────────────────────────────────────────────────
 const catalogsData = {
-    // FRANQUIAS CLÁSSICAS
-    "halloween": { name: "🎃 Halloween Saga", data: halloweenRelease },
-    "friday_13th": { name: "🔪 Friday the 13th", data: fridayRelease },
-    "nightmare": { name: "💀 Nightmare on Elm St", data: nightmareRelease },
-    "scream": { name: "📞 Scream Saga", data: screamData },
-    "chucky_saga": { name: "🔴 Chucky Saga", data: chuckyRelease },
-    "saw": { name: "🧩 Saw Legacy", data: sawTimeline },
-    "evil_dead": { name: "📖 Evil Dead Saga", data: evilDeadSaga },
-    "texas_chainsaw": { name: "🪚 Texas Chainsaw", data: texasChainsawSaga },
-    "hellraiser": { name: "📦 Hellraiser", data: hellraiserSaga },
-    
-    halloween: { name: '🎃 Halloween Saga', data: halloweenRelease },
-    friday_13th: { name: '🔪 Friday the 13th', data: fridayRelease },
-    nightmare: { name: '💀 Nightmare on Elm St', data: nightmareRelease },
-    scream: { name: '📞 Scream Saga', data: screamData },
-    chucky_saga: { name: '🔴 Chucky Saga', data: chuckyRelease },
-    saw: { name: '🧩 Saw Legacy', data: sawTimeline },
-    evil_dead: { name: '📖 Evil Dead Saga', data: evilDeadSaga },
-    texas_chainsaw: { name: '🪚 Texas Chainsaw', data: texasChainsawSaga },
-    hellraiser: { name: '📦 Hellraiser', data: hellraiserSaga },
+    // Slashers clássicos
+    halloween:          { name: '🎃 Halloween Saga',              data: halloweenRelease },
+    friday_13th:        { name: '🔪 Friday the 13th',             data: fridayRelease },
+    nightmare:          { name: '💀 Nightmare on Elm St',         data: nightmareRelease },
+    scream:             { name: '📞 Scream Saga',                  data: screamData },
+    chucky_saga:        { name: '🔴 Chucky Saga',                  data: chuckyRelease },
+    saw:                { name: '🧩 Saw Legacy',                   data: sawTimeline },
+    evil_dead:          { name: '📖 Evil Dead Saga',               data: evilDeadSaga },
+    texas_chainsaw:     { name: '🪚 Texas Chainsaw',              data: texasChainsawSaga },
+    hellraiser:         { name: '📦 Hellraiser',                   data: hellraiserSaga },
 
-    // UNIVERSOS CINEMATOGRÁFICOS
-    "conjuring_rel": { name: "👻 Conjuring (Release)", data: conjuringRelease },
-    "conjuring_time": { name: "⏳ Conjuring (Timeline)", data: conjuringTimeline },
-    "insidious": { name: "🚪 Insidious Universe", data: insidiousSaga },
-    "paranormal": { name: "📹 Paranormal Activity", data: paranormalActivity },
-    
-    conjuring_rel: { name: '👻 Conjuring (Release)', data: conjuringRelease },
-    conjuring_time: { name: '⏳ Conjuring (Timeline)', data: conjuringTimeline },
-    insidious: { name: '🚪 Insidious Universe', data: insidiousSaga },
-    paranormal: { name: '📹 Paranormal Activity', data: paranormalActivity },
+    // Universos cinematográficos
+    conjuring_rel:      { name: '👻 Conjuring (Release)',         data: conjuringRelease },
+    conjuring_time:     { name: '⏳ Conjuring (Timeline)',        data: conjuringTimeline },
+    insidious:          { name: '🚪 Insidious Universe',          data: insidiousSaga },
+    paranormal:         { name: '📹 Paranormal Activity',         data: paranormalActivity },
 
-    // SAGAS MODERNAS
-    "modern_horror": { name: "🎬 Modern Horror Sagas", data: modernSagas },
-    "final_dest": { name: "💀 Final Destination", data: finalDestination },
-    "resident_evil": { name: "🧟 Resident Evil", data: residentEvilSaga },
-    "a24_horror": { name: "🎨 A24 & Indie Horror", data: a24Horror },
-    
-    modern_horror: { name: '🎬 Modern Horror Sagas', data: modernSagas },
-    final_dest: { name: '💀 Final Destination', data: finalDestination },
-    resident_evil: { name: '🧟 Resident Evil', data: residentEvilSaga },
-    alien_predator_timeline: { name: '👽 Alien & Predator Timeline', data: alienPredatorTimeline },
-    a24_horror: { name: '🎨 A24 & Indie Horror', data: a24Horror },
+    // Sagas modernas
+    modern_horror:              { name: '🎬 Modern Horror Sagas',          data: modernSagas },
+    final_dest:                 { name: '💀 Final Destination',             data: finalDestination },
+    resident_evil:              { name: '🧟 Resident Evil',                 data: residentEvilSaga },
+    alien_predator_timeline:    { name: '👽 Alien & Predator Timeline',     data: alienPredatorTimeline },
+    a24_horror:                 { name: '🎨 A24 & Indie Horror',            data: a24Horror },
 
-    // POR GÊNERO
-    "classics": { name: "👑 Horror Classics (60s-00s)", data: horrorClassics },
-    "psychological": { name: "🧠 Psychological Horror", data: psychologicalHorror },
-    "found_footage": { name: "📼 Found Footage", data: foundFootageHorror },
-    "zombies": { name: "🧟‍♂️ Zombie Films", data: zombieHorror },
-    "asian_horror": { name: "🎌 Asian Horror (J-Horror/K-Horror)", data: asianHorror },
-    
-    classics: { name: '👑 Horror Classics (60s-00s)', data: horrorClassics },
-    psychological: { name: '🧠 Psychological Horror', data: psychologicalHorror },
-    found_footage: { name: '📼 Found Footage', data: foundFootageHorror },
-    zombies: { name: '🧟‍♂️ Zombie Films', data: zombieHorror },
-    asian_horror: { name: '🎌 Asian Horror (J-Horror/K-Horror)', data: asianHorror },
+    // Por gênero
+    classics:       { name: '👑 Horror Classics (60s-00s)',           data: horrorClassics },
+    psychological:  { name: '🧠 Psychological Horror',                data: psychologicalHorror },
+    found_footage:  { name: '📼 Found Footage',                       data: foundFootageHorror },
+    zombies:        { name: '🧟‍♂️ Zombie Films',                      data: zombieHorror },
+    asian_horror:   { name: '🎌 Asian Horror (J-Horror/K-Horror)',    data: asianHorror },
 
-    // AUTORES E SÉRIES
-    "stephen_king": { name: "📚 Stephen King Collection", data: stephenKingCollection },
-    "horror_series": { name: "📺 Horror TV Series", data: horrorSeries }
-    stephen_king: { name: '📚 Stephen King Collection', data: stephenKingCollection },
-    horror_series: { name: '📺 Horror TV Series', data: horrorSeries }
+    // Coleções especiais
+    stephen_king:   { name: '📚 Stephen King Collection', data: stephenKingCollection },
+    horror_series:  { name: '📺 Horror TV Series',        data: horrorSeries },
 };
 
-const detectCatalogType = (items = []) => {
-    if (items.length > 0 && items.every((item) => item.type === 'series')) return 'series';
-    return 'movie';
-};
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+
+/** Detecta o tipo predominante de um catálogo (movie | series). */
+const detectCatalogType = (items = []) =>
+    items.length > 0 && items.every((item) => item.type === 'series') ? 'series' : 'movie';
 
 const catalogTypeById = Object.fromEntries(
     Object.entries(catalogsData).map(([id, entry]) => [id, detectCatalogType(entry.data)])
@@ -117,7 +88,7 @@ const buildCatalogEntry = (id) => ({
     type: catalogTypeById[id] || 'movie',
     id,
     name: catalogsData[id].name,
-    extra: [{ name: 'skip', isRequired: false }]
+    extra: [{ name: 'skip', isRequired: false }],
 });
 
 const buildMeta = (item, fallbackType = 'movie') => ({
@@ -126,15 +97,21 @@ const buildMeta = (item, fallbackType = 'movie') => ({
     name: item.title,
     releaseInfo: String(item.year),
     poster: `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
-    posterShape: 'poster'
+    posterShape: 'poster',
 });
 
-const buildMetas = (items, fallbackType) => items.map((item) => buildMeta(item, fallbackType));
+const buildMetas = (items, fallbackType) =>
+    items.map((item) => buildMeta(item, fallbackType));
 
+// Cache de metas por catálogo
 const metasByCatalogId = Object.fromEntries(
-    Object.entries(catalogsData).map(([id, entry]) => [id, buildMetas(entry.data, catalogTypeById[id])])
+    Object.entries(catalogsData).map(([id, entry]) => [
+        id,
+        buildMetas(entry.data, catalogTypeById[id]),
+    ])
 );
 
+// Índice global de meta por IMDb ID (primeira ocorrência vence)
 const metaById = Object.values(catalogsData).reduce((acc, catalog) => {
     const fallbackType = detectCatalogType(catalog.data);
     catalog.data.forEach((item) => {
@@ -145,42 +122,28 @@ const metaById = Object.values(catalogsData).reduce((acc, catalog) => {
     return acc;
 }, {});
 
+/** Retorna array de IDs de catálogos válidos a partir de uma string de configuração. */
 const parseSelectedCatalogs = (configuration = '') => {
-    if (typeof configuration !== 'string') return null;
-    if (!configuration) return null;
-
+    if (!configuration || typeof configuration !== 'string') return null;
     const selected = configuration
         .split(',')
         .map((id) => id.trim())
         .filter((id) => id && catalogsData[id]);
-
-    return Array.from(new Set(selected));
+    return selected.length ? [...new Set(selected)] : null;
 };
 
-// --- MANIFEST BASE ---
+const parseSkip = (value) => {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+};
+
+const CATALOG_PAGE_SIZE = 100;
+
+// ─── MANIFEST ─────────────────────────────────────────────────────────────────
 const baseManifest = {
-    id: "com.horror.archive.v13",
-    name: "🎬 Horror Archive",
-    description: "The Ultimate Horror Collection - 700+ Films & Series | Optimized & Complete",
-    version: "13.0.0",
-    logo: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png",
-    background: "https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png",
-    resources: ["catalog"], 
-    types: ["movie", "series", "Horror Archive"], 
-    idPrefixes: ["tt"], 
-    catalogs: Object.keys(catalogsData).map(key => ({
-        type: "Horror Archive",
-        id: key,
-        name: catalogsData[key].name,
-        extra: [
-            { name: "skip", isRequired: false }
-        ]
-    })),
-    behaviorHints: { 
-        configurable: true, 
     id: 'com.horror.archive.v13.2.3',
     name: '🎬 Horror Archive',
-    description: 'The Ultimate Horror Collection - Curated by IMDb IDs | Fast & Compatible',
+    description: 'The Ultimate Horror Collection — 460+ curated entries | IMDb-first | Fast & Compatible',
     version: '13.2.3',
     logo: 'https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/icon.png',
     background: 'https://raw.githubusercontent.com/blaumath/Horror-Archive/main/assets/background.png',
@@ -192,62 +155,36 @@ const baseManifest = {
         configurable: true,
         configurationRequired: false,
         adult: false,
-        p2p: false
-    }
+        p2p: false,
+    },
 };
 
-// --- ROTAS ---
 const buildManifest = (configuration) => {
-    const selectedCatalogs = parseSelectedCatalogs(configuration);
-    const activeCatalogIds = selectedCatalogs === null ? Object.keys(catalogsData) : selectedCatalogs;
-
-    return {
-        ...baseManifest,
-        catalogs: activeCatalogIds.map(buildCatalogEntry)
-    };
+    const selectedIds = parseSelectedCatalogs(configuration);
+    const activeIds = selectedIds ?? Object.keys(catalogsData);
+    return { ...baseManifest, catalogs: activeIds.map(buildCatalogEntry) };
 };
 
+// ─── STATS ────────────────────────────────────────────────────────────────────
 const catalogStats = Object.fromEntries(
     Object.entries(catalogsData).map(([id, entry]) => [id, entry.data.length])
 );
 const totalCatalogs = Object.keys(catalogsData).length;
-const totalEntries = Object.values(catalogStats).reduce((sum, count) => sum + count, 0);
-const CATALOG_PAGE_SIZE = 100;
+const totalEntries = Object.values(catalogStats).reduce((sum, n) => sum + n, 0);
 
-const parseSkip = (value) => {
-    const parsed = Number.parseInt(value, 10);
-    if (!Number.isFinite(parsed) || parsed < 0) return 0;
-    return parsed;
-};
+// ─── ROTAS ────────────────────────────────────────────────────────────────────
 
-// Manifest
+// Manifest (com ou sem configuração no prefixo)
 app.get(['/manifest.json', '/:configuration/manifest.json'], (req, res) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Content-Type', 'application/json');
-    res.json(baseManifest);
     res.json(buildManifest(req.params.configuration));
 });
 
-// Catálogos
-app.get('/catalog/:type/:id.json', (req, res) => {
-// Catálogos (com ou sem configuração no prefixo da URL)
+// Catálogos (com ou sem configuração no prefixo)
 app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
     res.setHeader('Content-Type', 'application/json');
-    
-    const catalogEntry = catalogsData[req.params.id];
-    if (!catalogEntry) return res.json({ metas: [] });
-
-    const metas = catalogEntry.data.map(item => ({
-        id: item.imdbId,
-        type: item.type || "movie", 
-        name: item.title,
-        releaseInfo: String(item.year),
-        poster: `https://images.metahub.space/poster/medium/${item.imdbId}/img`,
-        posterShape: "poster"
-    }));
-    
-    res.json({ metas });
 
     const catalogType = catalogTypeById[req.params.id];
     if (!catalogType || req.params.type !== catalogType) {
@@ -259,7 +196,7 @@ app.get(['/catalog/:type/:id.json', '/:configuration/catalog/:type/:id.json'], (
     return res.json({ metas });
 });
 
-// Meta (com ou sem configuração no prefixo da URL)
+// Meta (com ou sem configuração no prefixo)
 app.get(['/meta/:type/:id.json', '/:configuration/meta/:type/:id.json'], (req, res) => {
     res.setHeader('Cache-Control', 'max-age=3600, stale-while-revalidate=86400');
     res.setHeader('Content-Type', 'application/json');
@@ -268,40 +205,27 @@ app.get(['/meta/:type/:id.json', '/:configuration/meta/:type/:id.json'], (req, r
     if (!meta || req.params.type !== meta.type) {
         return res.status(404).json({ meta: null });
     }
-
     return res.json({ meta });
 });
 
 // Stats para a página de configuração
-app.get('/catalog-stats.json', (req, res) => {
+app.get('/catalog-stats.json', (_req, res) => {
     res.setHeader('Cache-Control', 'max-age=300, stale-while-revalidate=3600');
     res.setHeader('Content-Type', 'application/json');
-    res.json({
-        version: baseManifest.version,
-        totalCatalogs,
-        totalEntries,
-        catalogStats
-    });
+    res.json({ version: baseManifest.version, totalCatalogs, totalEntries, catalogStats });
 });
 
 // Página de configuração
-app.get('/configure', (req, res) => {
+app.get('/configure', (_req, res) => {
     res.setHeader('Content-Type', 'text/html');
     res.sendFile(path.join(__dirname, 'public', 'configure.html'));
 });
-app.get('/', (req, res) => res.redirect('/configure'));
+
+app.get('/', (_req, res) => res.redirect('/configure'));
 
 // Health check
-app.get('/health', (req, res) => {
-    res.json({ 
-        status: 'OK', 
-    res.json({
-        status: 'OK',
-        version: baseManifest.version,
-        catalogs: Object.keys(catalogsData).length
-        catalogs: totalCatalogs,
-        entries: totalEntries
-    });
+app.get('/health', (_req, res) => {
+    res.json({ status: 'OK', version: baseManifest.version, catalogs: totalCatalogs, entries: totalEntries });
 });
 
 module.exports = app;
